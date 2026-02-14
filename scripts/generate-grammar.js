@@ -30,7 +30,7 @@ const controlKeywords = [
   "extrude", "set", "mark", "select", "translate", "rotate", "scale", "union", "subtract",
   "intersect", "fillet", "chamfer", "sweep", "revolve", "loft", "blend", "pathrule",
   "import", "catbeg", "catend", "ifthen", "elseif", "else", "endif", "foreach", "endfor",
-  "while", "endwhile", "break", "continue", "throw", "try", "catch", "endtry", "end"
+  "while", "endwhile", "break", "continue", "throw", "try", "catch", "endtry", "end", "rule"
 ];
 
 const functionKeywords = [
