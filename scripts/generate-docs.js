@@ -86,12 +86,26 @@ function parseOpenCSMHeader() {
 }
 
 function main() {
+  const headerPath = path.join(__dirname, '../OpenCSM.h');
+  const docPath = path.join(__dirname, '../csm-documentation.json');
+  
+  // Check if OpenCSM.h exists
+  if (!fs.existsSync(headerPath)) {
+    if (fs.existsSync(docPath)) {
+      console.log('OpenCSM.h not found, using existing csm-documentation.json');
+      return;
+    } else {
+      console.warn('Warning: OpenCSM.h not found and no existing documentation available');
+      console.warn('Documentation generation skipped');
+      return;
+    }
+  }
+  
   console.log('Extracting CSM documentation from OpenCSM.h...');
   
   const commands = parseOpenCSMHeader();
   
   // Save command documentation for hover provider
-  const docPath = path.join(__dirname, '../csm-documentation.json');
   fs.writeFileSync(docPath, JSON.stringify(commands, null, 2));
   console.log(`Saved ${Object.keys(commands).length} command documentations to ${docPath}`);
 }

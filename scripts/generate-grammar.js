@@ -96,9 +96,11 @@ function generateGrammar() {
 
   // Create case-insensitive patterns for CSM commands (for function calls)
   const allCommands = [...new Set([...controlKeywords, ...functionKeywords, ...csmCommands, ...allCsmCommands])];
-  // Exclude commands that have specific patterns
+  // Exclude commands that have specific patterns or are control keywords
+  const controlKeywordsLower = controlKeywords.map(k => k.toLowerCase());
   const generalCommands = allCommands.filter(cmd => 
-    !['udparg', 'UDPARG', 'udprim', 'UDPRIM'].includes(cmd)
+    !['udparg', 'UDPARG', 'udprim', 'UDPRIM'].includes(cmd) &&
+    !controlKeywordsLower.includes(cmd.toLowerCase())
   );
   const commandPatternCaseInsensitive = generalCommands.map(makePatternCaseInsensitive);
   const commandCallPattern = commandPatternCaseInsensitive.length > 0 ? 
@@ -137,9 +139,6 @@ function generateGrammar() {
       },
       {
         "include": "#operators"
-      },
-      {
-        "include": "#invalid-lines"
       },
       {
         "include": "#variables"
@@ -338,7 +337,7 @@ function generateGrammar() {
           },
           {
             "name": "meta.function-call.geometry.csm",
-            "begin": "^\\s*((?i:BOX|CYLINDER|SPHERE|CONE|TORUS))\\s+",
+            "begin": "^\\s*((?i:BOX|CYLINDER|SPHERE|CONE|TORUS|REVOLVE|ROTATEX|ROTATEY|ROTATEZ|TRANSLATE|SCALE))\\s+",
             "beginCaptures": {
               "1": {
                 "name": "keyword.control.csm"
@@ -347,12 +346,13 @@ function generateGrammar() {
             "end": "(?=#|$)",
             "patterns": [
               {
-                "match": "([a-zA-Z_][a-zA-Z0-9_]*|[-+]?[0-9]*\\.?[0-9]+(?:[eE][-+]?[0-9]+)?)",
-                "captures": {
-                  "1": {
-                    "name": "constant.numeric.csm"
-                  }
-                }
+                "include": "#numbers"
+              },
+              {
+                "include": "#operators"
+              },
+              {
+                "include": "#variables"
               }
             ]
           },
@@ -474,7 +474,10 @@ function generateGrammar() {
     "scopeName": "source.csm"
   };
 
-  fs.writeFileSync(path.join(__dirname, '../csm.tmLanguage.json'), JSON.stringify(grammar, null, 2));
+  // Write to both locations for compatibility
+  const grammarJson = JSON.stringify(grammar, null, 2);
+  fs.writeFileSync(path.join(__dirname, '../csm.tmLanguage.json'), grammarJson);
+  fs.writeFileSync(path.join(__dirname, '../syntaxes/csm.tmLanguage.json'), grammarJson);
   console.log('Grammar file generated successfully!');
 }
 
