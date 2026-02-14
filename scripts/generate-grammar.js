@@ -219,23 +219,13 @@ function generateGrammar() {
             "end": "(?=#|$)",
             "patterns": [
               {
-                "match": "\\G([a-zA-Z_][a-zA-Z0-9_]*)",
-                "captures": {
-                  "1": {
-                    "name": "entity.name.type.csm"
-                  }
-                }
+                "include": "#numbers"
               },
               {
-                "match": "\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
-                "captures": {
-                  "1": {
-                    "name": "support.type.csm"
-                  },
-                  "2": {
-                    "name": "variable.other.csm"
-                  }
-                }
+                "include": "#operators"
+              },
+              {
+                "include": "#variables"
               }
             ]
           },
@@ -250,23 +240,13 @@ function generateGrammar() {
             "end": "(?=#|$)",
             "patterns": [
               {
-                "match": "\\G([a-zA-Z_][a-zA-Z0-9_]*)",
-                "captures": {
-                  "1": {
-                    "name": "entity.name.type.csm"
-                  }
-                }
+                "include": "#numbers"
               },
               {
-                "match": "\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\s+([a-zA-Z_][a-zA-Z0-9_]*)",
-                "captures": {
-                  "1": {
-                    "name": "support.type.csm"
-                  },
-                  "2": {
-                    "name": "variable.other.csm"
-                  }
-                }
+                "include": "#operators"
+              },
+              {
+                "include": "#variables"
               }
             ]
           }
@@ -276,7 +256,7 @@ function generateGrammar() {
         "patterns": [
           {
             "name": "meta.function-call.parameter.csm",
-            "begin": "^\\s*((?i:ATTRIBUTE|CFGPMTR|DESPMTR|OUTPMTR|PATBEG))\\s+",
+            "begin": "^\\s*((?i:ATTRIBUTE|CFGPMTR|DESPMTR|OUTPMTR|PATBEG|CONPMTR|SET|DIMENSION|LBOUND|UBOUND))\\s+",
             "beginCaptures": {
               "1": {
                 "name": "keyword.control.csm"
@@ -285,59 +265,82 @@ function generateGrammar() {
             "end": "(?=#|$)",
             "patterns": [
               {
-                "match": "(\\$[a-zA-Z_][a-zA-Z0-9_]*)\\s+(.+?)(?=\\s*(?:#|$))",
-                "captures": {
-                  "1": {
-                    "name": "entity.name.tag.csm"
-                  },
-                  "2": {
-                    "name": "string.quoted.csm"
-                  }
-                }
+                "include": "#numbers"
               },
               {
-                "match": "([a-zA-Z_][a-zA-Z0-9_]*)\\s+([-+]?[0-9]*\\.?[0-9]+(?:[eE][-+]?[0-9]+)?)(?=\\s*(?:#|$))",
-                "captures": {
-                  "1": {
-                    "name": "variable.other.csm"
-                  },
-                  "2": {
-                    "name": "constant.numeric.csm"
-                  }
-                }
+                "include": "#operators"
               },
               {
-                "match": "([a-zA-Z_][a-zA-Z0-9_]*)\\s+(.+?)(?=\\s*(?:#|$))",
-                "captures": {
-                  "1": {
-                    "name": "variable.other.csm"
-                  },
-                  "2": {
-                    "name": "string.quoted.csm"
-                  }
-                }
-              },
-              {
-                "match": "(\\$[a-zA-Z_][a-zA-Z0-9_]*)(?=\\s*(?:#|$))",
-                "captures": {
-                  "1": {
-                    "name": "entity.name.tag.csm"
-                  }
-                }
-              },
-              {
-                "match": "([a-zA-Z_][a-zA-Z0-9_]*)(?=\\s*(?:#|$))",
-                "captures": {
-                  "1": {
-                    "name": "variable.other.csm"
-                  }
-                }
+                "include": "#variables"
               }
             ]
           },
           {
             "name": "meta.function-call.geometry.csm",
-            "begin": "^\\s*((?i:BOX|CYLINDER|SPHERE|CONE|TORUS|REVOLVE|ROTATEX|ROTATEY|ROTATEZ|TRANSLATE|SCALE))\\s+",
+            "begin": "^\\s*((?i:BOX|CYLINDER|SPHERE|CONE|TORUS|POINT|ARC|BEZIER|CIRARC|LINSEG|SPLINE|SSLOPE))\\s+",
+            "beginCaptures": {
+              "1": {
+                "name": "keyword.control.csm"
+              }
+            },
+            "end": "(?=#|$)",
+            "patterns": [
+              {
+                "include": "#numbers"
+              },
+              {
+                "include": "#operators"
+              },
+              {
+                "include": "#variables"
+              }
+            ]
+          },
+          {
+            "name": "meta.function-call.transformation.csm",
+            "begin": "^\\s*((?i:REVOLVE|ROTATEX|ROTATEY|ROTATEZ|TRANSLATE|SCALE|EXTRUDE|MIRROR|CHAMFER|FILLET|HOLLOW|EXTRACT|BLEND|LOFT|RULE|CONNECT|COMBINE|PROJECT|REORDER))\\s+",
+            "beginCaptures": {
+              "1": {
+                "name": "keyword.control.csm"
+              }
+            },
+            "end": "(?=#|$)",
+            "patterns": [
+              {
+                "include": "#numbers"
+              },
+              {
+                "include": "#operators"
+              },
+              {
+                "include": "#variables"
+              }
+            ]
+          },
+          {
+            "name": "meta.function-call.file-storage.csm",
+            "begin": "^\\s*((?i:STORE|RESTORE|DUMP|IMPORT|NAME|GETATTR|CSYSTEM|GROUP|EVALUATE|SELECT|ASSERT))\\s+",
+            "beginCaptures": {
+              "1": {
+                "name": "keyword.control.csm"
+              }
+            },
+            "end": "(?=#|$)",
+            "patterns": [
+              {
+                "include": "#numbers"
+              },
+              {
+                "include": "#operators"
+              },
+              {
+                "include": "#variables"
+              }
+            ]
+          },
+          {
+            "name": "meta.function-call.sketch.csm",
+            "begin": "^\\s*((?i:SKBEG|SKCON|SKVAR|SKEND))\\s+",
             "beginCaptures": {
               "1": {
                 "name": "keyword.control.csm"
@@ -450,7 +453,7 @@ function generateGrammar() {
         "patterns": [
           {
             "name": "keyword.operator.csm",
-            "match": "[+\\-*/=<>!&|^%~]+"
+            "match": "[+\\-*/=<>!&|^%~:]+"
           }
         ]
       },
@@ -458,7 +461,7 @@ function generateGrammar() {
         "patterns": [
           {
             "name": "variable.other.csm",
-            "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
+            "match": "[a-zA-Z_][a-zA-Z0-9_]*"
           }
         ]
       },
