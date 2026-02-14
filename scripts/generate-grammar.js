@@ -114,6 +114,9 @@ function generateGrammar() {
         "include": "#udp-commands"
       },
       {
+        "include": "#interface-command"
+      },
+      {
         "include": "#csm-parameter-commands"
       },
       {
@@ -219,13 +222,34 @@ function generateGrammar() {
             "end": "(?=#|$)",
             "patterns": [
               {
-                "include": "#numbers"
+                "match": "\\G([a-zA-Z_][a-zA-Z0-9_:/]*)",
+                "captures": {
+                  "1": {
+                    "name": "support.type.csm"
+                  }
+                }
               },
               {
-                "include": "#operators"
+                "match": "\\s+([a-zA-Z_][a-zA-Z0-9_:]*)\\s+(-?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)",
+                "captures": {
+                  "1": {
+                    "name": "support.type.csm"
+                  },
+                  "2": {
+                    "name": "constant.numeric.csm"
+                  }
+                }
               },
               {
-                "include": "#variables"
+                "match": "\\s+([a-zA-Z_][a-zA-Z0-9_:]*)\\s+([a-zA-Z_][a-zA-Z0-9_:]*)",
+                "captures": {
+                  "1": {
+                    "name": "support.type.csm"
+                  },
+                  "2": {
+                    "name": "variable.other.csm"
+                  }
+                }
               }
             ]
           },
@@ -239,6 +263,63 @@ function generateGrammar() {
             },
             "end": "(?=#|$)",
             "patterns": [
+              {
+                "match": "\\G([a-zA-Z_][a-zA-Z0-9_:/]*)",
+                "captures": {
+                  "1": {
+                    "name": "support.type.csm"
+                  }
+                }
+              },
+              {
+                "match": "\\s+([a-zA-Z_][a-zA-Z0-9_:]*)\\s+(-?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)",
+                "captures": {
+                  "1": {
+                    "name": "support.type.csm"
+                  },
+                  "2": {
+                    "name": "constant.numeric.csm"
+                  }
+                }
+              },
+              {
+                "match": "\\s+([a-zA-Z_][a-zA-Z0-9_:]*)\\s+([a-zA-Z_][a-zA-Z0-9_:]*)",
+                "captures": {
+                  "1": {
+                    "name": "support.type.csm"
+                  },
+                  "2": {
+                    "name": "variable.other.csm"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "interface-command": {
+        "patterns": [
+          {
+            "name": "meta.function-call.interface.csm",
+            "begin": "^\\s*((?i:INTERFACE))\\s+",
+            "beginCaptures": {
+              "1": {
+                "name": "keyword.control.csm"
+              }
+            },
+            "end": "(?=#|$)",
+            "patterns": [
+              {
+                "match": "\\G([a-zA-Z_][a-zA-Z0-9_:]*)\\s+(in|out|dim)\\b",
+                "captures": {
+                  "1": {
+                    "name": "variable.other.csm"
+                  },
+                  "2": {
+                    "name": "support.type.csm"
+                  }
+                }
+              },
               {
                 "include": "#numbers"
               },
@@ -318,8 +399,29 @@ function generateGrammar() {
             ]
           },
           {
-            "name": "meta.function-call.file-storage.csm",
-            "begin": "^\\s*((?i:STORE|RESTORE|DUMP|IMPORT|NAME|GETATTR|CSYSTEM|GROUP|EVALUATE|SELECT|ASSERT))\\s+",
+            "name": "meta.function-call.storage.csm",
+            "begin": "^\\s*((?i:STORE|RESTORE|NAME|GETATTR|CSYSTEM|APPLYCSYS|DUMP|IMPORT))\\s+",
+            "beginCaptures": {
+              "1": {
+                "name": "keyword.control.csm"
+              }
+            },
+            "end": "(?=#|$)",
+            "patterns": [
+              {
+                "include": "#numbers"
+              },
+              {
+                "include": "#operators"
+              },
+              {
+                "include": "#variables"
+              }
+            ]
+          },
+          {
+            "name": "meta.function-call.other-operations.csm",
+            "begin": "^\\s*((?i:GROUP|EVALUATE|SELECT|ASSERT))\\s+",
             "beginCaptures": {
               "1": {
                 "name": "keyword.control.csm"
