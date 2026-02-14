@@ -1,0 +1,25 @@
+{
+  "name": "csm-language",
+  "displayName": "CSM Language Support",
+  "description": "Syntax highlighting for CSM files",
+  "version": "1.0.0",
+  "license": "MIT",
+  "engines": { 
+    "vscode": "^1.0.0" 
+  },
+  "categories": ["Programming Languages"],
+  "contributes": {
+    "languages": [{
+      "id": "csm",
+      "aliases": ["CSM", "csm"],
+      "extensions": [".csm"],
+      "filenames": [],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "csm",
+      "scopeName": "source.csm",
+      "path": "./syntaxes/csm.tmLanguage.json"
+    }]
+  }
+}
