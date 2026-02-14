@@ -1,0 +1,642 @@
+{
+  "NODE": {
+    "name": "NODE",
+    "syntax": "NODE (NodeBody)",
+    "description": "",
+    "usage": "",
+    "parameters": "(NodeBody)",
+    "notes": ""
+  },
+  "WIRE": {
+    "name": "WIRE",
+    "syntax": "WIRE (WireBody)",
+    "description": "",
+    "usage": "",
+    "parameters": "(WireBody)",
+    "notes": ""
+  },
+  "SHEET": {
+    "name": "SHEET",
+    "syntax": "SHEET (SheetBody)",
+    "description": "",
+    "usage": "",
+    "parameters": "(SheetBody)",
+    "notes": ""
+  },
+  "SOLID": {
+    "name": "SOLID",
+    "syntax": "SOLID (SolidBody)",
+    "description": "",
+    "usage": "",
+    "parameters": "(SolidBody)",
+    "notes": ""
+  },
+  "A": {
+    "name": "A",
+    "syntax": "A .udc file follows the rules of a .csm file, EXCEPT:",
+    "description": "",
+    "usage": "",
+    "parameters": ".udc file follows the rules of a .csm file, EXCEPT:",
+    "notes": ""
+  },
+  "UDPRIM": {
+    "name": "UDPRIM",
+    "syntax": "UDPRIM $primtype $argName1 argValue1 $argName2 argValue2 ...",
+    "description": "",
+    "usage": "create a Body by executing a UDP, UDC, or UDF",
+    "parameters": "$primtype $argName1 argValue1 $argName2 argValue2 ...",
+    "notes": "Solver may not be open\\nprimtype  determines the type of primitive and the number of\\nargName/argValue pairs\\nif primtype begins with a letter\\nthen a compiled udp whose name is primtype.so is used\\nif primtype starts with a /\\nthen a .udc file in the current directory will be used\\nif primtype starts with $/\\nthen a .udc file in the parent (.csm or .udc)\\ndirectory will be used\\nif primtype starts with $$/\\nthen a .udc file in ESP_ROOT/udc will be used\\nprimtype  is used directly (without evaluation)\\narguments are specified in name/value pairs and are\\nnot positional\\nargName#  is used directly (without evaluation)\\nargValue# is used directly if it starts with '$', otherwise it\\nis evaluated\\nif argValue# is <<, use data to matching >> as inline file\\nif argValue# starts with '$$/', use path relative to .csm file\\nextra arguments can be set with UDPARG statement\\nwhen called to execute a .udc file:\\nthe level is incremented\\nLOCALVARs are created for all INTERFACE stmts\\nfor \"in\"  the value is set to its default\\nfor \"out\" the value is set to its default\\nfor \"dim\" an array is created (of size=value) with\\nvalue=dot=0\\nthe associated UDPARG and UDPRIM statements are processed\\nin order\\nif argName matches a Parameter created by an INTERFACE\\nstatement\\nif argValueX matches the name of a Parameter at\\nlevel-1\\nthe values are copied into the new Parameter\\nelse\\nargValueX is evalued and stored in the new\\nParameter\\nelse\\nan error is returned\\nthe statements in the .udc are executed until an END\\nstatement\\na SET statement either creates a new Parameter or\\noverwrites a value\\nduring the execution of the END statement\\nfor values associated with an INTERFACE \"out\" statement\\nthe value is copied to the appropriate @@-parameter\\n(at level-1)\\nall Parameters at the current level are destroyed\\nthe level is decremented\\nsensitivity computed w.r.t. argValue1, argValue2, argValue3,\\nargValue4\\ncomputes Face and Edge sensitivities analytically (if supplied\\nby the udp)\\nsets up @-parameters\\nthe Faces all receive the Branch's Attributes\\nface-order is based upon order returned from UDPRIM\\nsignals that may be thrown/caught:\\n$did_not_create_body\\n$insufficient_bodys_on_stack\\nudp-specific code\\nsee udp documentation for full information"
+  },
+  "END": {
+    "name": "END",
+    "syntax": "END statements that are part of in included UDC create END branches",
+    "description": "",
+    "usage": "",
+    "parameters": "statements that are part of in included UDC create END branches",
+    "notes": ""
+  },
+  "SET": {
+    "name": "SET",
+    "syntax": "SET $pmtrName exprs",
+    "description": "",
+    "usage": "define or update a (redefinable) local or output variable",
+    "parameters": "$pmtrName exprs",
+    "notes": "pmtrName can be in form 'name', 'name[irow]', or 'name[irow,icol]'\\npmtrName must not start with '@'\\npmtrName must not refer to an DESPMTR/CONPMTR Parameter\\npmtrName will be marked as LOCALVAR (or OUTPMTR)\\npmtrName is used directly (without evaluation)\\nirow and icol cannot contain a comma or open bracket\\nif exprs has multiple values (separated by ;), then\\nany subscripts in pmtrName are ignored\\nif exprs starts with $ (or evaluates to a string), then any\\nsubscripts in pmtrName are ignored and a string value is defined\\nif exprs is the name of a multi-valued parameter, it is\\ntreated as if its values were listed as a semi-colon-\\nseparated list\\nif pmtrName is in the form 'name' or 'name[0]' or 'name[0,0]'\\nif exprs is longer than Parameter size, extra exprs are lost\\nif exprs is shorter than Parameter size, last expr is repeated\\nif pmtrName is in the form 'name[irow]' or 'name[irow,0]', then\\nthe irow'th element is defined (where elements are counted\\nacross rows)\\nif pmtrName is in the form 'name[irow,icol]' and irow is between\\n1 and nrow and icol is between 1 and ncol, then the\\n[irow,icol]th element is set\\nif no Bodys have been created yet\\nassociated ATTRIBUTEs are global Attributes\\notherwise\\ncannot be followed by ATTRIBUTE\\ncannot be folowed by CSYSTEM"
+  },
+  "APPLYCSYS": {
+    "name": "APPLYCSYS",
+    "syntax": "APPLYCSYS $csysName ibody=0",
+    "description": "",
+    "usage": "transforms Group on top of stack so that their",
+    "parameters": "$csysName ibody=0",
+    "notes": "Solver may not be open\\nif ibody>0, use csys associated with that Body\\nif ibody==0, then search for csys backward from\\nnext-to-last Body on stack\\nif ibody==-1, transform Body on top of stack so\\nthat its csys is moved to the origin\\nsets up @-parameters\\nsignals that may be thrown/caught:\\n$body_not_found\\n$insufficient_bodys_on_stack\\n$name_not_found"
+  },
+  "ARC": {
+    "name": "ARC",
+    "syntax": "ARC xend yend zend dist $plane=xy",
+    "description": "",
+    "usage": "create a new circular arc to the new point, with a",
+    "parameters": "xend yend zend dist $plane=xy",
+    "notes": "Solver may not be open\\n$plane must be xy, yz, or zx\\nif dist>0, sweep is counterclockwise\\nsensitivity computed w.r.t. xend, yend, zend, dist\\nsignals that may be thrown/caught:"
+  },
+  "ASSERT": {
+    "name": "ASSERT",
+    "syntax": "ASSERT arg1 arg2 toler=0 verify=0",
+    "description": "",
+    "usage": "return error if arg1 and arg2 differ",
+    "parameters": "arg1 arg2 toler=0 verify=0",
+    "notes": "if toler<0, set toler=abs(arg1*toler)\\nif (abs(arg1-arg2) > toler) return an error\\nonly executed if verify<=MODL->verify\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "ATTRIBUTE": {
+    "name": "ATTRIBUTE",
+    "syntax": "ATTRIBUTE $attrName attrValue",
+    "description": "",
+    "usage": "sets an Attribute for the Group on top of Stack",
+    "parameters": "$attrName attrValue",
+    "notes": "if first char of attrValue is '$', then string Attribute\\nelseif attrValue is a Parameter name, all its elements\\nare stored in Attribute\\notherwise attrValue is a semicolon-separated list of\\nscalar numbers/expressions\\ndoes not create a Branch\\nif before first Branch that creates a Body,\\nthe Attribute is a string-valued global Attribute\\nif after BLEND, BOX, CHAMFER, COMBINE, CONE, CONNECT,\\nCYLINDER, EXTRUDE, FILLET, HOLLOW, IMPORT, LOFT,\\nRESTORE, REVOLVE, RULE, SPHERE, SWEEP, TORUS,\\nor UDPRIM\\nthe Attribute is added to the Body and its Faces\\nelse\\nthe Attribute is only added to the Body\\nis applied to selected Nodes, Edges, or Faces if after a"
+  },
+  "BEZIER": {
+    "name": "BEZIER",
+    "syntax": "BEZIER x y z",
+    "description": "",
+    "usage": "add a Bezier control point",
+    "parameters": "x y z",
+    "notes": "Solver may not be open\\nsensitivity computed w.r.t. x, y, z\\nsignals that may be thrown/caught:"
+  },
+  "BLEND": {
+    "name": "BLEND",
+    "syntax": "BLEND begList=0 endList=0 reorder=0 oneFace=0 periodic=0",
+    "description": "",
+    "usage": "create a Body by blending through Xsects since Mark",
+    "parameters": "begList=0 endList=0 reorder=0 oneFace=0 periodic=0",
+    "notes": "Solver may not be open\\nall Xsects must have the same number of Edges\\nif all Xsects are NodeBodys\\na WireBody is created\\nelseif all Xsects are WireBodys (or a NodeBody at one end)\\na SheetBody is created\\nelse\\na SolidBody is created\\nXsects cannot be non-manifold WireBody\\nif the first Xsect is a point\\nif begList is 0\\npointed end is created\\nelseif begList contains 8 values\\nbegList contains rad1;dx1;dy1;dz1;rad2;dx2;dy2;dz2\\nrounded end is created\\nelseif first Xsect is a WireBody\\ncreated SheetBody is open at the beginning\\nelseif first Xsect is a SheetBody\\nif begList is 0\\ncreated Body included SheetBody at its beginning\\nelseif begList contains 2 values and first is -1\\nbegList contains -1;aspect\\nrounded end with approximately given aspect ratio\\nif first Xsect is a WireBody or SheetBody\\nif begList contains 3 values\\nbegList describes inward tangency at beginning\\nif the last Xsect is a point\\nif endList is 0\\npointed end is created\\nelseif endList contains 8 values\\nendList contains rad1;dx1;dy1;dz1;rad2;dx2;dy2;dz2\\nrounded end is created\\nelseif last Xsect is a WireBody\\ncreated SheetBody is open at the end\\nelseif last Xsect is a SheetBody\\nif endList is 0\\ncreated Body included SheetBody at its end\\nelseif endList contains 2 values and first is -1\\nendList contains -1;aspect\\nrounded end with approximately given aspect ratio\\nif last Xsect is a WireBody or SheetBody\\nif endList contains 3 values\\nendList describes inward tangency at end\\nif begList!=0 and endList!=0, there must be at least\\nthree interior Xsects\\ninterior Xsects can be repeated once for C1 continuity\\ninterior Xsects can be repeated twice for C0 continuity\\nif reorder!=0 then Xsects are reordered to minimize Edge\\nlengths in the direction between Xsects\\nfirst Xsect is unaltered if reorder>0\\nlast  Xsect is unaltered if reorder<0\\nif oneFace==1 then do not split at C0 (multiplicity=3)\\nif periodic=1 then connect the first and last Xsects\\nsensitivity computed w.r.t. begList, endList\\nsets up @-parameters\\nthe Faces all receive the Branch's Attributes\\nAttributes on Xsects are maintained\\nface-order is: (base), (end), feat1:part1,\\nfeat1:part2, ... feat2:part1, ...\\nsignals that may be thrown/caught:\\n$error_in_bodys_on_stack\\n$insufficient_bodys_on_stack\\n$wrong_types_on_stack"
+  },
+  "BOX": {
+    "name": "BOX",
+    "syntax": "BOX xbase ybase zbase dx dy dz",
+    "description": "",
+    "usage": "create a box SolidBody or planar SheetBody",
+    "parameters": "xbase ybase zbase dx dy dz",
+    "notes": "Solver may not be open\\nif one of dx, dy, or dz is zero, a SheetBody is created\\nif two of dx, dy, or dz is zero, a WireBody  is created\\nif dx, dy, dz      are all zero, a NodeBody  is creates\\nsensitivity computed w.r.t. xbase, ybase, zbase, dx, dy, dz\\ncomputes Face, Edge, and Node sensitivities analytically\\nsets up @-parameters\\nthe Faces all receive the Branch's Attributes\\nface-order is: xmin, xmax, ymin, ymax, zmin, zmax\\nsignals that may be thrown/caught:\\n$illegal_value"
+  },
+  "CATBEG": {
+    "name": "CATBEG",
+    "syntax": "CATBEG sigCode",
+    "description": "",
+    "usage": "execute Block of Branches if current signal matches",
+    "parameters": "sigCode",
+    "notes": "$all\\n$body_not_found\\n$colinear_sketch_points\\n$created_too_many_bodys\\n$did_not_create_body\\n$edge_not_found\\n$error_in_bodys_on_stack\\n$face_not_found\\n$file_not_found\\n$func_arg_out_of_bounds\\n$illegal_argument\\n$ilegal_attribute\\n$illegal_csystem\\n$illegal_pmtr_index\\n$illegal_pmtr_name\\n$illegal_value\\n$insufficient_bodys_on_stack\\n$name_not_found\\n$node_not_found\\n$non_coplanar_sketch_points\\n$no_selection\\n$underconstrained\\n$overconstrained\\n$not_converged\\n$self_intersecting\\n$wrong_types_on_stack\\n$assert_failed\\nif sigCode does not match current signal, skip to matching\\nCATEND\\nBlock contains all Branches up to matching CATEND\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "CFGPMTR": {
+    "name": "CFGPMTR",
+    "syntax": "CFGPMTR $pmtrName value",
+    "description": "",
+    "usage": "define a configuration Paramater",
+    "parameters": "$pmtrName value",
+    "notes": "Solver may not be open\\nstatement may not be used in a .udc file\\npmtrName must be in form 'name'\\npmtrName must not start with '@'\\npmtrName must not refer to an LOCALVAR/OUTPMTR/CONPMTR\\npmtrName will be marked as CFGPMTR\\npmtrName is used directly (without evaluation)\\nif value already exists, it is not overwritten\\ndoes not create a Branch\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "CHAMFER": {
+    "name": "CHAMFER",
+    "syntax": "CHAMFER radius edgeList=0",
+    "description": "",
+    "usage": "apply a chamfer to a Body",
+    "parameters": "radius edgeList=0",
+    "notes": "Solver may not be open\\nif listStyle==0\\nif previous operation is boolean, apply to all new Edges\\nedgeList=0 is the same as edgeList=[0;0]\\nedgeList is a multi-value Parameter or a semicolon-separated\\nlist\\npairs of edgeList entries are processed in order\\npairs of edgeList entries are interpreted as follows:\\ncol1  col2   meaning\\n=0    =0    add all Edges\\n>0    >0    add    Edges between iford=+icol1\\nand iford=+icol2\\n<0    <0    remove Edges between iford=-icol1\\nand iford=-icol2\\n>0    =0    add    Edges adjacent to iford=+icol1\\n<0    =0    remove Edges adjacent to iford=-icol1\\nelse\\nedgeList contains Edge number(s)\\nsensitivity computed w.r.t. radius\\nsets up @-parameters\\nnew Faces all receive the Branch's Attributes\\nface-order is based upon order that is returned from EGADS\\nsignals that may be thrown/caught:\\n$illegal_argument\\n$illegal_value\\n$insufficient_bodys_on_stack\\n$wrong_types_on_stack"
+  },
+  "CIRARC": {
+    "name": "CIRARC",
+    "syntax": "CIRARC xon yon zon xend yend zend",
+    "description": "",
+    "usage": "create a new circular arc, using the previous point",
+    "parameters": "xon yon zon xend yend zend",
+    "notes": "Solver may not be open\\nsensitivity computed w.r.t. xon, yon, zon, xend, yend, zend\\nsignals that may be thrown/caught:"
+  },
+  "COMBINE": {
+    "name": "COMBINE",
+    "syntax": "COMBINE toler=0",
+    "description": "",
+    "usage": "combine Bodys since Mark into next higher type",
+    "parameters": "toler=0",
+    "notes": "Solver may not be open\\nMark must be set\\nif all Bodys since Mark are SheetBodys\\ncreate either a SolidBody from closed Shell or an\\n(open) SheetBody\\nelseif there is 1 planar WireBody that is closed\\ncreate SheetBody from Loop\\nelseif there is 1 planar WireBody that is open\\ncreate SheetBody from Loop after closing Loop first\\nelseif there are multiple planar WireBodys that are closed\\ncreate SheetBody from closed Loop\\nelseif there are multiple WireBodys that have common Nodes\\ncreate non-manifold WireBody\\nendif\\nif maxtol>0, then tolerance can be relaxed until successful\\nsets up @-parameters\\nsignals that may be thrown/caught:\\n$did_not_create_body\\n$insufficient_bodys_on_stack\\n$wrong_types_on_stack"
+  },
+  "CONE": {
+    "name": "CONE",
+    "syntax": "CONE xvrtx yvrtx zvrtx xbase ybase zbase radius",
+    "description": "",
+    "usage": "create a cone Body",
+    "parameters": "xvrtx yvrtx zvrtx xbase ybase zbase radius",
+    "notes": "Solver may not be open\\nsensitivity computed w.r.t. xvrtx, yvrtx, zvrtz, xbase, ybase,\\nzbase, radius\\ncomputes Face, Edge, and Node sensitivities analytically\\nsets up @-parameters\\nthe Faces all receive the Branch's Attributes\\nface-order is: (empty), base, umin, umax\\nif x-aligned: umin=ymin, umax=ymax\\nif y-aligned: umin=xmax, umax=xmin\\nif z-aligned: umin=ymax, umax=ymin\\nsignals that may be thrown/caught:\\n$illegal_value"
+  },
+  "CONNECT": {
+    "name": "CONNECT",
+    "syntax": "CONNECT faceList1 faceList2 edgeList1=0 edgeList2=0 toler=0",
+    "description": "",
+    "usage": "connects two Bodys with bridging Faces",
+    "parameters": "faceList1 faceList2 edgeList1=0 edgeList2=0 toler=0",
+    "notes": "Solver may not be open\\nfaceList1 and faceList2 must have the same length\\nedgeList1 and edgeList2 must have the same length\\nedgeList1[i] corresponds to edgeList2[i]\\nfaceList1[i] corresponds to faceList2[i]\\nif Body1 is a Mark, left and rite Bodys are the same\\nif edgeLists are given\\nBody1 is either WireBody, SheetBody, or SolidBody\\nBody2 is same type as Body1\\nBody  is same type as Body1\\nFace in faceLists are removed\\nbridging Faces are made between edgeList pairs\\na zero in an edgelist creates a degenerate Face\\nelse\\nBody1 and Body2 must both be SolidBodys\\nFaces within each faceList must be contiguous\\nbridging Faces between exposed Edges are created\\nnew Faces all receive the Branch's Attributes\\nsets up @-parameters\\nif edgeLists are given\\nface-order is same as edgeList\\nelse\\nface-order is arbitrary\\nsignals that may be thrown/caught:\\n$illegal_argument\\n$illegal_value\\n$insufficient_bodys_on_stack"
+  },
+  "CONPMTR": {
+    "name": "CONPMTR",
+    "syntax": "CONPMTR $pmtrName values",
+    "description": "",
+    "usage": "define a constant Parameter",
+    "parameters": "$pmtrName values",
+    "notes": "Solver may not be open\\nstatement may not be used in a .udc file\\npmtrName must be in form 'name'\\npmtrName must not start with '@'\\npmtrName must not refer to an LOCALVAR/OUTPMTR/DESPMTR\\npmtrName will be marked as CONPMTR\\npmtrName is used directly (without evaluation)\\npmtrName is available within .csm and .udc files\\nvalue(s) must be numbers\\ndoes not create a Branch\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "CSYSTEM": {
+    "name": "CSYSTEM",
+    "syntax": "CSYSTEM $csysName csysList",
+    "description": "",
+    "usage": "attach a Csystem to Body on top of stack",
+    "parameters": "$csysName csysList",
+    "notes": "if     csysList contains 9 entries:\\n{x0, y0, z0, dx1, dy1, dz1, dx2, dy2, dz2}\\norigin is at (x0,y0,z0)\\ndirn1  is in (dx1,dy1,dz1) direction\\ndirn2  is part of (dx2,dy2,dz2) that is orthog. to dirn1\\nelseif csysList contains 5 entries and first is positive\\n{+iface, ubar0, vbar0, du2, dv2}\\norigin is at normalized (ubar0,vbar0) in iface\\ndirn1  is normal to Face\\ndirn2  is in (du2,dv2) direction\\nelseif csyList contains 5 entries and first is negative\\n{-iedge, tbar, dx2, dy2, dz2}\\norigin is at normalized (tbar) in iedge\\ndirn1  is tangent to Edge\\ndirn2  is part of (dx2,dy2,dz2) that is orthog. to dirn1\\nelseif csysList contains 7 entries\\n{inode, dx1, dy1, dz1, dx2, dy2, dz2}\\norigin is at Node inode\\ndirn1  is in (dx1,dy1,dz1) direction\\ndirn2  is part of (dx2,dy2,dz2) that is orthog. to dirn1\\nelse\\nerror\\nsemicolon-sep lists can instead refer to\\nmulti-valued Parameter\\ndirn3 is formed by (dirn1)-cross-(dirn2)\\ndoes not create a Branch"
+  },
+  "CYLINDER": {
+    "name": "CYLINDER",
+    "syntax": "CYLINDER xbeg ybeg zbeg xend yend zend radius",
+    "description": "",
+    "usage": "create a cylinder Body",
+    "parameters": "xbeg ybeg zbeg xend yend zend radius",
+    "notes": "Solver may not be open\\nsensitivity computed w.r.t. xbeg, ybeg, zbeg, xend, yend,\\nzend, radius\\ncomputes Face, Edge, and Node sensitivities analytically\\nsets up @-parameters\\nthe Faces all receive the Branch's Attributes\\nface-order is: beg, end, umin, umax\\nif x-aligned: umin=ymin, umax=ymax\\nif y-aligned: umin=xmax, umax=xmin\\nif z-aligned: umin=ymax, umax=ymin\\nsignals that may be thrown/caught:\\n$illegal_value"
+  },
+  "DESPMTR": {
+    "name": "DESPMTR",
+    "syntax": "DESPMTR $pmtrName values",
+    "description": "",
+    "usage": "define a design Parameter",
+    "parameters": "$pmtrName values",
+    "notes": "Solver may not be open\\nstatement may not be used in a function-type .udc file\\npmtrName can be in form 'name' or 'name[irow,icol]'\\npmtrName must not start with '@'\\npmtrName must not refer to an LOCALVAR/OUTPMTR/CONPMTR\\npmtrName will be marked as DESPMTR\\npmtrName is used directly (without evaluation)\\nirow and icol cannot contain a comma or open bracket\\nif irow is a colon (:), then all rows    are input\\nif icol is a colon (:), then all columns are input\\npmtrName[:,:] is equivalent to pmtrName\\nvalues cannot refer to any other Parameter\\nif value already exists, it is not overwritten\\nvalues are defined across rows, then across columns\\nif values has more entries than needed, extra values\\nare lost\\nif values has fewer entries than needed, last value\\nis repeated\\ndoes not create a Branch\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "DIMENSION": {
+    "name": "DIMENSION",
+    "syntax": "DIMENSION $pmtrName nrow ncol",
+    "description": "",
+    "usage": "set up or redimensions an array Parameter",
+    "parameters": "$pmtrName nrow ncol",
+    "notes": "Solver may not be open\\nnrow >= 1\\nncol >= 1\\npmtrName must not start with '@'\\nif applied to a DESPMTR or CFGPMTR, must be in either\\n.csm file or top-level include-style .udc file\\na legacy fourth argument (despmtr) is no longer used\\nold values are not overwritten\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "DUMP": {
+    "name": "DUMP",
+    "syntax": "DUMP $filename remove=0 toMark=0 withTess=0",
+    "description": "",
+    "usage": "write a file that contains the Body",
+    "parameters": "$filename remove=0 toMark=0 withTess=0",
+    "notes": "if file exists, it is overwritten\\nfilename is used directly (without evaluation)\\nif filename starts with '$/', it is prepended with path of\\nthe .csm file\\nif remove=1, then Body1 is removed after dumping\\nif toMark=1, all Bodys back to the Mark (or all if no Mark)\\nare combined into a single model\\nif toMark=1, the remove flag is ignored\\nif withTess!=0, add tessellations to .egads file\\nfor .ugrid files, toMark must be 0\\nvalid filetypes are:\\n.brep   .BREP   --> OpenCASCADE output\\n.bstl   .BSTL   --> binary stl  output\\n.egads  .EGADS  --> EGADS       output\\n.egg    .EGG    --> EGG restart output\\n.iges   .IGES   --> IGES        output\\n.igs    .IGS    --> IGES        output\\n.plot   .PLOT   --> ASCII plot  output\\n.sens   .SENS   --> ASCII sens  output\\n.step   .STEP   --> STEP        output\\n.stl    .STL    --> ASCII stl   output\\n.stp    .STP    --> STEP        output\\n.tess   .TESS   --> ASCII tess  output\\n.ugrid  .UGRID  --> ASCII AFRL3 output\\nif .bstl, use _stlColor from Face, Body, or 0 for color\\nif .egads, set _despmtr_* and _outpmtr_ Attributes on Model\\nsignals that may be thrown/caught:\\n$file_not_found\\n$insufficient_bodys_on_stack"
+  },
+  "ELSEIF": {
+    "name": "ELSEIF",
+    "syntax": "ELSEIF val1 $op1 val2 $op2=and val3=0 $op3=eq val4=0",
+    "description": "",
+    "usage": "execute or skip a sequence of Branches",
+    "parameters": "val1 $op1 val2 $op2=and val3=0 $op3=eq val4=0",
+    "notes": "must follow an IFTHEN or ELSEIF statement\\nif preceeding (matching) IFTHEN or ELSEIF evaluated true,\\nthen skip Branches up to matching ENDIF\\nop1 must be one of: lt LT le LE eq EQ ge GE gt GT ne NE\\nop2 must be one of: or OR and AND xor XOR\\nop3 must be one of: lt LT le LE eq EQ ge GE gt GT ne NE\\nif expression evaluates false, skip Branches up to next\\nELSEIF, ELSE, or ENDIF\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "EVALUATE": {
+    "name": "EVALUATE",
+    "syntax": "EVALUATE $type arg1 ...",
+    "description": "",
+    "usage": "evaluate coordinates of NODE, EDGE, or FACE",
+    "parameters": "$type arg1 ...",
+    "notes": "ibody is Body number (1:nbody)\\ninode is Node number (1:nnode)\\nreturn in @edata:\\nx, y, z\\nelseif arguments are: \"edge ibody iedge t\"\\nibody is Body number (1:nbody)\\niedge is Edge number (1:nedge)\\nevaluate Edge at given t\\nreturn in @edata:\\nt (clipped),\\nx,      y,      z,\\ndxdt,   dydt,   dzdt,\\nd2xdt2, d2ydt2, d2zdt2\\nelseif arguments are: \"edge ibody iedge $beg\"\\nibody is Body number (1:nbody)\\niedge is Edge number (1:nedge)\\nevaluate Edge at beginning\\nreturn in @edata:\\nt (clipped),\\nx,      y,      z,\\ndxdt,   dydt,   dzdt,\\nd2xdt2, d2ydt2, d2zdt2\\nelseif arguments are: \"edge ibody iedge $end\"\\nibody is Body number (1:nbody)\\niedge is Edge number (1:nedge)\\nevaluate Edge at end\\nreturn in @edata:\\nt (clipped),\\nx,      y,      z,\\ndxdt,   dydt,   dzdt,\\nd2xdt2, d2ydt2, d2zdt2\\nelseif arguments are: \"edgerng ibody iedge\"\\nibody is Body number (1:nbody)\\niedge is Edge number (1:nedge)\\nreturn in @edata:\\ntmin, tmax\\nelseif arguments are: \"edgeinv ibody iedge x y z\"\\nibody is Body number (1:nbody)\\niedge is Edge number (1:nedge)\\ninverse evaluate Edge at given (x,y,z)\\nreturn in @edata:\\nt,\\nxclose,  yclose,  zclose\\nelseif arguments are: \"face ibody iface u v\"\\nibody is Body number (1:nbody)\\niface is Face number (1:nface)\\nevaluate Face at given (u,v)\\nreturn in @edata:\\nu (clipped), v (clipped),\\nx,       y,       z,\\ndxdu,    dydu,    dzdu,\\ndxdv,    dydv,    dzdv,\\nd2xdu2,  d2ydu2,  d2zdu2,\\nd2xdudv, d2ydudv, d2zdudv,\\nd2xdv2,  d2ydv2,  d2zdv2,\\nnormx,   normy,   normz\\nelseif arguments are: \"facerng ibody iface\"\\nibody is Body number (1:nbody)\\niface is Face number (1:nface)\\nreturn in @edata:\\numin, umax, vmin, vmax\\nelseif arguments are: \"faceinv ibody iface x y z\"\\nibody is Body number (1:nbody)\\niface is Face number (1:nface)\\ninverse evaluate Face at given (x,y,z)\\nreturn in @edata:\\nu,       v,\\nxclose,  yclose,  zclose\\ncannot be followed by ATTRIBUTE or CSYSTEM\\nsignals that may be thrown/caught:\\n$body_not_found\\n$edge_not_found\\n$face_not_found\\n$node_not_found"
+  },
+  "EXTRACT": {
+    "name": "EXTRACT",
+    "syntax": "EXTRACT entList",
+    "description": "",
+    "usage": "extract Face(s) or Edge(s) from a Body",
+    "parameters": "entList",
+    "notes": "Solver may not be open\\nall members of entList must have the same sign\\nBody1 must be a SolidBody or a SheetBody\\nif     entList entries are all positive\\ncreate SheetBody from entList Face(s) of Body1\\nelseif entList entries are all negative\\ncreate WireBody from -entList Edge(0) of Body1\\nelseif Body1=SolidBody and entList=0\\ncreate SheetBody from outer Shell of Body1\\nelseif Body1=SheetBody and entList=0\\ncreate WireBody from outer Loop of Body1\\nendif\\nsets up @-parameters\\nsignals that may be thrown/caught:\\n$insufficient_bodys_on_stack\\n$wrong_types_on_stack\\n$did_not_create_body\\n$illegal_value\\n$edge_not_found\\n$face_not_found"
+  },
+  "EXTRUDE": {
+    "name": "EXTRUDE",
+    "syntax": "EXTRUDE dx dy dz",
+    "description": "",
+    "usage": "create a Body by extruding an Xsect",
+    "parameters": "dx dy dz",
+    "notes": "Solver may not be open\\nif Xsect is a SheetBody, then a SolidBody is created\\nif Xsect is a WireBody, then a SheetBody is created\\nif Xsect is a NodeBody, then a WireBody is created\\nsensitivity computed w.r.t. dx, dy, dz\\ncomputes Face sensitivities analytically\\nsets up @-parameters\\nthe Faces all receive the Branch's Attributes\\nAttributes on Xsect Face are placed on both beg and end Faces\\nAttributes on Xsect Edges that do not start with\\n. or _ are placed on the associated Faces\\nAttributes on Xsect Edges are not placed on Edges\\nface-order is: (base), (end), feat1, ...\\nsignals that may be thrown/caught:\\n$illegal_value\\n$insufficient_bodys_on_stack\\n$wrong_types_on_stack"
+  },
+  "FILLET": {
+    "name": "FILLET",
+    "syntax": "FILLET radius edgeList=0 listStyle=0",
+    "description": "",
+    "usage": "apply a fillet to a Body",
+    "parameters": "radius edgeList=0 listStyle=0",
+    "notes": "Solver may not be open\\nif listStyle==0\\nif previous operation is boolean, apply to all new Edges\\nedgeList=0 is the same as edgeList=[0;0]\\nedgeList is a multi-value Parameter or a semicolon-separated\\nlist\\npairs of edgeList entries are processed in order\\npairs of edgeList entries are interpreted as follows:\\ncol1  col2   meaning\\n=0    =0    add all Edges\\n>0    >0    add    Edges between iford=+icol1\\nand iford=+icol2\\n<0    <0    remove Edges between iford=-icol1\\nand iford=-icol2\\n>0    =0    add    Edges adjacent to iford=+icol1\\n<0    =0    remove Edges adjacent to iford=-icol1\\nelse\\nedgeList contains Edge number(s)\\nsensitivity computed w.r.t. radius\\nsets up @-parameters\\nnew Faces all receive the Branch's Attributes\\nface-order is based upon order that is returned from EGADS\\nsignals that may be thrown/caught:\\n$illegal_argument\\n$illegal_value\\n$insufficient_bodys_on_stack\\n$wrong_types_on_stack"
+  },
+  "GETATTR": {
+    "name": "GETATTR",
+    "syntax": "GETATTR $pmtrName attrID global=0",
+    "description": "",
+    "usage": "store an Attribute value(s) in a LOCALVAR",
+    "parameters": "$pmtrName attrID global=0",
+    "notes": ""
+  },
+  "GROUP": {
+    "name": "GROUP",
+    "syntax": "GROUP nbody=0",
+    "description": "",
+    "usage": "create a Group of Bodys since Mark for subsequent",
+    "parameters": "nbody=0",
+    "notes": "Solver may not be open\\nif nbody>0,   then nbody Bodys on stack are in Group\\nif nbody<0,   then Bodys are ungrouped\\nif no Mark on stack, all Bodys on stack are in Group\\nthe Mark is removed from the stack\\nAttributes are set on all Bodys in Group\\nsignals that may be thrown/caught:\\n$insufficient_bodys_on_stack\\n$wrong_types_on_stack"
+  },
+  "HOLLOW": {
+    "name": "HOLLOW",
+    "syntax": "HOLLOW thick=0 entList=0 listStyle=0",
+    "description": "",
+    "usage": "hollow out a SolidBody or SheetBody",
+    "parameters": "thick=0 entList=0 listStyle=0",
+    "notes": "Sketch may not be open\\nSolver may not be open\\nif SolidBody (radius is ignored)\\nif thick=0 and entList==0         (case A)\\nconvert to SheetBody\\nif thick=0 and entList!=0         (case B)\\nconvert to SheetBody without Faces in entList (if connected)\\nif thick>0 and entList==0         (case C)\\nlarger offset Body is created\\nif thick<0 and entList==0         (case D)\\nsmaller offset Body is created\\nif thick>0 and entList!=0         (case E)\\nhollow (removing entList) with new Faces inside  original Body\\nif thick<0 and entList!=0         (case F)\\nhollow (removing entList) with new Faces outside original Body\\nif a SheetBody with only one Face\\nif thick=0 and entList==0         (case G)\\nconvert to WireBody (if connected)\\nif thick=0 and entList!=0         (case H)\\nconvert to WireBody without Edges in entList (if connected)\\nif thick>0 and entList==0         (case I)\\nhollow with new Edges inside  original Body\\nif thick<0 and entList==0         (case J)\\nhollow with new Edges outside original Body\\nif thick>0 and entList!=0         (case K)\\nhollow (removing entList) with new Edges inside  original Body\\nif thick<0 and entList!=0         (case L)\\nhollow (removing entList) with new Edges outside original Body\\nif a SheetBody with multiple Faces\\nif thick=0 and entList!=0         (case M)\\nremove Faces in entList (if connected)\\nif thick>0 and entList==0         (case N)\\nhollow all Faces with new Edges inside original Faces\\nif thick>0 and entList!=0         (case P)\\nhollow Faces in entList with new Edges inside original Faces\\nentList is multi-valued Parameter, or a semicolon-separated list\\nif listStyle==0 and a SolidBody\\npairs of entList entries are processed in order\\nthe first  entry in a pair indicates the Body when\\nFace was generated (see first number in _body Attribute)\\nthe second entry in a pair indicates the face-order (see\\nsecond number in _body Attribute)\\notherwise\\nentries in entList are Edge or Face numbers\\nsensitivity computed w.r.t. thick\\nsets up @-parameters\\nnew Faces all receive the Branch's Attributes\\nface-order is based upon order that is returned from EGADS\\nsignals that may be thrown/caught:\\n$illegal_argument\\n$did_not_create_body\\n$insufficient_bodys_on_stack"
+  },
+  "IFTHEN": {
+    "name": "IFTHEN",
+    "syntax": "IFTHEN val1 $op1 val2 $op2=and val3=0 $op3=eq val4=0",
+    "description": "",
+    "usage": "execute or skip a Block of Branches",
+    "parameters": "val1 $op1 val2 $op2=and val3=0 $op3=eq val4=0",
+    "notes": "op1 must be one of: lt LT le LE eq EQ ge GE gt GT ne NE\\nop2 must be one of: or OR and AND xor XOR\\nop3 must be one of: lt LT le LE eq EQ ge GE gt GT ne NE\\nif expression evaluates false, skip Block of Branches up\\nto next (matching) ELSEIF, ELSE, or ENDIF are skipped\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "IMPORT": {
+    "name": "IMPORT",
+    "syntax": "IMPORT $filename bodynumber=1",
+    "description": "",
+    "usage": "import from filename",
+    "parameters": "$filename bodynumber=1",
+    "notes": "Solver may not be open\\nfilename is used directly (without evaluation)\\nif filename starts with '$$/', use path relative to .csm file\\nif bodynumber=-1, then all Bodys are returned in one Group\\nsets up @-parameters\\nthe Faces all receive the Branch's Attributes\\nface-order is based upon order in file\\nsignals that may be thrown/caught:\\n$did_not_create_body\\nudp-specific code"
+  },
+  "INTERFACE": {
+    "name": "INTERFACE",
+    "syntax": "INTERFACE $argName $argTypet default=0",
+    "description": "",
+    "usage": "defines an argument for a .udc file",
+    "parameters": "$argName $argTypet default=0",
+    "notes": "must be placed before any executable statement\\nargType must be \"in\", \"out\", \"dim\", or \"all\"\\nargType=\"dim\" is obsolete, use DIMENSION instead\\nif argType==\"all\", a new scope is not created (and\\n$argName is ignored)\\na string variable can be passed into UDC if default\\nis a string\\na string varaible can be passed out of UDC\\ncannot be followed by ATTRIBUTE or CSYSTEM\\nsignals that may be thrown/caught:\\n$pmtr_is_conpmtr"
+  },
+  "INTERSECT": {
+    "name": "INTERSECT",
+    "syntax": "INTERSECT $order=none index=1 maxtol=0",
+    "description": "",
+    "usage": "perform Boolean intersection (Body2 & Body1)",
+    "parameters": "$order=none index=1 maxtol=0",
+    "notes": "Solver may not be open\\nif     Body1=SolidBody and Body2=SolidBody\\ncreate SolidBody that is common part of Body1 and Body2\\nif index=-1, then all Bodys are returned\\nelseif Body1=SolidBody and Body2=SheetBody\\ncreate SheetBody that is the part of Body2 that is\\ninside Body1\\nif index=-1, then all Bodys are returned\\nelseif Body1=SolidBody and Body2=WireBody\\ncreate WireBody that is the part of Body2 that is\\ninside Body1\\nif index=-1, then all Bodys are returned\\nelseif Body1=SheetBody and Body2=SolidBody\\ncreate SheetBody that is the part of Body1 that is\\ninside Body2\\nif index=-1, then all Bodys are returned\\nelseif Body1=SheetBody and Body2=SheetBody and Bodys are\\nco-planar\\ncreate SheetBody that is common part of Body1 and Body2"
+  },
+  "JOIN": {
+    "name": "JOIN",
+    "syntax": "JOIN toler=0 toMark=0",
+    "description": "",
+    "usage": "join two Bodys at a common Edge or Face",
+    "parameters": "toler=0 toMark=0",
+    "notes": "Solver may not be open\\nif toMark=1 and all Bodys to Mark are SheetBodys\\ncreate SheetBody\\nelseif toMark=1 and all Bodys to Mark are WireBodys\\ncreate WireBody\\nelseif Body1=SolidBody and Body2=SolidBody\\ncreate SolidBody formed by joining Body1 and Body2 at\\ncommon Faces\\nelseif Body1=SheetBody and Body2=SheetBody\\ncreate SheetBody formed by joining Body1 and Body2 at\\ncommon Edges\\nelseif Body1=WireBody and Body2=WireBody\\ncreate WireBody formed by joining Body1 and Body2 at\\ncommon end Node\\nendif\\nchange in v1.19: if common Edges are not found, return\\n$edge_not_found\\nsets up @-parameters\\nsignals that may be thrown/caught:\\n$created_too_many_bodys\\n$did_not_create_body\\n$edge_not_found\\n$face_not_found\\n$insufficient_bodys_on_stack\\n$wrong_types_on_stack"
+  },
+  "LBOUND": {
+    "name": "LBOUND",
+    "syntax": "LBOUND $pmtrName bounds",
+    "description": "",
+    "usage": "defines a lower bound for a DESPMTR or CFGPMTR",
+    "parameters": "$pmtrName bounds",
+    "notes": "Solver may not be open\\nstatement may not be used in a function-type .udc file\\nif value of Parameter is smaller than bounds, a warning is\\ngenerated\\npmtrName must have been defined previously by DESPMTR\\nstatement\\npmtrName can be in form 'name' or 'name[irow,icol]'\\npmtrName must not start with '@'\\npmtrName is used directly (without evaluation)\\nirow and icol cannot contain a comma or open bracket\\nif irow is a colon (:), then all rows    are input\\nif icol is a colon (:), then all columns are input\\npmtrName[:,:] is equivalent to pmtrName\\nbounds cannot refer to any other Parameter\\nbounds are defined across rows, then across columns\\nif bounds has more entries than needed, extra bounds\\nare lost\\nif bounds has fewer entries than needed, last bound\\nis repeated\\nany previous bounds are overwritten\\ndoes not create a Branch\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "LINSEG": {
+    "name": "LINSEG",
+    "syntax": "LINSEG x y z",
+    "description": "",
+    "usage": "create a new line segment, connecting the previous",
+    "parameters": "x y z",
+    "notes": "Solver may not be open\\nsensitivity computed w.r.t. x, y, z\\nsignals that may be thrown/caught:"
+  },
+  "LOFT": {
+    "name": "LOFT",
+    "syntax": "LOFT smooth",
+    "description": "",
+    "usage": "create a Body by lofting through Xsects since Mark",
+    "parameters": "smooth",
+    "notes": "Solver may not be open\\nall Xsects must have the same number of Segments\\nif Xsect is a SheetBody, then a SolidBody is created\\nif Xsect is a WireBody, then a SheetBody is created\\nXsects cannot be non-manifold WireBody\\nthe Faces all receive the Branch's Attributes\\nAttributes on Xsects are not maintained\\nface-order is: (base), (end), feat1, ...\\nif NINT(smooth)=1, then sections are smoothed\\nthe first and/or last Xsect can be a point"
+  },
+  "MACBEG": {
+    "name": "MACBEG",
+    "syntax": "MACBEG imacro",
+    "description": "",
+    "usage": "marks the start of a macro",
+    "parameters": "imacro",
+    "notes": "Solver may not be open\\nimacro must be between 1 and 100\\ncannot overwrite a previous macro\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "MESSAGE": {
+    "name": "MESSAGE",
+    "syntax": "MESSAGE $text $schar=_",
+    "description": "",
+    "usage": "generate a message to be displayed",
+    "parameters": "$text $schar=_",
+    "notes": "any character in text that matches schar will\\nbe converted to a space\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "MIRROR": {
+    "name": "MIRROR",
+    "syntax": "MIRROR nx ny nz dist=0",
+    "description": "",
+    "usage": "mirrors Group on top of Stack",
+    "parameters": "nx ny nz dist=0",
+    "notes": "Solver may not be open\\nnormal of the mirror plane is given by nx,ny,nz\\nmirror plane is dist from origin\\nsensitivity computed w.r.t. nx, ny, nz, dist\\nsets up @-parameters\\nsignals that may be thrown/caught:\\n$insufficient_bodys_on_stack"
+  },
+  "NAME": {
+    "name": "NAME",
+    "syntax": "NAME $branchName",
+    "description": "",
+    "usage": "names the entry on top of Stack",
+    "parameters": "$branchName",
+    "notes": "does not create a Branch"
+  },
+  "OUTPMTR": {
+    "name": "OUTPMTR",
+    "syntax": "OUTPMTR $pmtrName",
+    "description": "",
+    "usage": "define an OUTPMTR",
+    "parameters": "$pmtrName",
+    "notes": "Solver may not be open\\nstatement may not be used in a .udc file\\npmtrName must be in form 'name'\\npmtrName must not start with '@'\\npmtrName will be marked as OUTPMTR\\npmtrName is used directly (without evaluation)\\ndoes not create a Branch\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "PATBEG": {
+    "name": "PATBEG",
+    "syntax": "PATBEG $pmtrName ncopy",
+    "description": "",
+    "usage": "execute a Block of Branches ncopy times",
+    "parameters": "$pmtrName ncopy",
+    "notes": "Block contains all Branches up to matching PATEND\\npmtrName must not start with '@'\\npmtrName takes values from 1 to ncopy (see below)\\npmtrName is used directly (without evaluation)\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "PATBREAK": {
+    "name": "PATBREAK",
+    "syntax": "PATBREAK expr",
+    "description": "",
+    "usage": "break out of inner-most Patbeg Block if expr>0",
+    "parameters": "expr",
+    "notes": "must be in a Patbeg Block\\nskip to Branch after matching PATEND if expr>0\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "POINT": {
+    "name": "POINT",
+    "syntax": "POINT xloc yloc zloc",
+    "description": "",
+    "usage": "create a single point Body",
+    "parameters": "xloc yloc zloc",
+    "notes": "Solver may not be open\\nsensitivity computed w.r.t. xloc, yloc, zloc\\ncomputes Node sensitivity analytically\\nsets up @-parameters"
+  },
+  "PROJECT": {
+    "name": "PROJECT",
+    "syntax": "PROJECT x y z dx dy dz useEdges=0",
+    "description": "",
+    "usage": "find the first projection from given point in given",
+    "parameters": "x y z dx dy dz useEdges=0",
+    "notes": "Solver may not be open\\nif useEdges!=1\\nlook for intersections with Faces and overwrite @iface\\nelse\\nlook for intersections with Edges and overwrite @iedge\\nendif\\nover-writes the following @-parameters: @xcg, @ycg, and @zcg\\ncannot be followed by ATTRIBUTE or CSYSTEM\\nsignals that may be thrown/caught:\\n$face_not_found\\n$insufficient_bodys_on_stack"
+  },
+  "RECALL": {
+    "name": "RECALL",
+    "syntax": "RECALL imacro",
+    "description": "",
+    "usage": "recalls copy of macro from a storage location imacro",
+    "parameters": "imacro",
+    "notes": "Solver may not be open\\nstorage location imacro must have been previously filled by\\na MACBEG statement"
+  },
+  "REORDER": {
+    "name": "REORDER",
+    "syntax": "REORDER ishift iflip=0",
+    "description": "",
+    "usage": "change the order of Edges in a Body",
+    "parameters": "ishift iflip=0",
+    "notes": "Solver may not be open\\nit is generally better to use reorder argument in"
+  },
+  "RESTORE": {
+    "name": "RESTORE",
+    "syntax": "RESTORE $name index=0",
+    "description": "",
+    "usage": "restores Body(s) that was/were previously stored",
+    "parameters": "$name index=0",
+    "notes": "Solver may not be open\\n$name is used directly (without evaluation)\\nif $name is . (dot), then duplicate Body on stack\\nif index<0, get all Bodys that match $name\\nsets up @-parameters\\nerror results if nothing has been stored in name\\nthe Faces all receive the Branch's Attributes\\nsignals that may be thrown/caught:\\n$insufficient_bodys_on_stack\\n$wrong_types_on_stack\\n$name_not_found"
+  },
+  "REVOLVE": {
+    "name": "REVOLVE",
+    "syntax": "REVOLVE xorig yorig zorig dxaxis dyaxis dzaxis angDeg",
+    "description": "",
+    "usage": "create a Body by revolving an Xsect around an axis",
+    "parameters": "xorig yorig zorig dxaxis dyaxis dzaxis angDeg",
+    "notes": "Solver may not be open\\nif Xsect is a SheetBody, then a SolidBody is created\\nif Xsect is a WireBody, then a SheetBody is created\\nsensitivity computed w.r.t. xorig, yorig, zorig, dxaxis,\\ndyaxis, dzaxis, andDeg\\nsets up @-parameters\\nthe Faces all receive the Branch's Attributes\\nAttributes on Xsect Face are placed on both beg and end Faces\\nAttributes on Xsect Edges that do not start with\\n. or _ are placed on the associated Faces\\nAttributes on Xsect Edges are not placed on Edges\\nface-order is: (base), (end), feat1, ...\\nsignals that may be thrown/caught:\\n$illegal_value\\n$insufficient_bodys_on_stack\\n$wrong_types_on_stack"
+  },
+  "ROTATEX": {
+    "name": "ROTATEX",
+    "syntax": "ROTATEX angDeg yaxis=0 zaxis=0",
+    "description": "",
+    "usage": "rotates Group on top of Stack around an axis that",
+    "parameters": "angDeg yaxis=0 zaxis=0",
+    "notes": "Solver may not be open\\nsensitivity computed w.r.t. angDeg, yaxis, zaxis\\nsets up @-parameters\\nsignals that may be thrown/caught:\\n$insufficient_bodys_on_stack"
+  },
+  "ROTATEY": {
+    "name": "ROTATEY",
+    "syntax": "ROTATEY angDeg zaxis=0 xaxis=0",
+    "description": "",
+    "usage": "rotates Group on top of Stack around an axis that",
+    "parameters": "angDeg zaxis=0 xaxis=0",
+    "notes": "Solver may not be open\\nsensitivity computed w.r.t. angDeg, zaxis, xaxis\\nsets up @-parameters\\nsignals that may be thrown/caught:\\n$insufficient_bodys_on_stack"
+  },
+  "ROTATEZ": {
+    "name": "ROTATEZ",
+    "syntax": "ROTATEZ angDeg xaxis=0 yaxis=0",
+    "description": "",
+    "usage": "rotates Group on top of Stack around an axis that",
+    "parameters": "angDeg xaxis=0 yaxis=0",
+    "notes": "Solver may not be open\\nsensitivity computed w.r.t. angDeg, xaxis, yaxis\\nsets up @-parameters\\nsignals that may be thrown/caught:\\n$insufficient_bodys_on_stack"
+  },
+  "RULE": {
+    "name": "RULE",
+    "syntax": "RULE reorder=0 periodic=0",
+    "description": "",
+    "usage": "create a Body by creating ruled surfaces thru Xsects",
+    "parameters": "reorder=0 periodic=0",
+    "notes": "Solver may not be open\\nif reorder!=0 then Xsects are reordered to minimize Edge\\nlengths\\nfirst Xsect is unaltered if reorder>0\\nlast  Xsect is unaltered if reorder<0\\nall Xsects must have the same number of Edges\\nXsects cannot be non-manifold WireBody\\nif all Xsects are NodeBodys\\na WireBody is created\\nelseif all Xsects are WireBodys (or a NodeBody at one end)\\na SheetBody is created\\nelse\\na SolidBody is created\\nthe first and/or last Xsect can be a NodeBody\\nif periodic=1 then connect the first and last Xsects\\ncomputes Face sensitivities analytically\\nsets up @-parameters\\nthe Faces all receive the Branch's Attributes\\nAttributes on Xsects are maintained\\nface-order is: (base), (end), feat1:part1,\\nfeat1:part2, ... feat2:part1, ...\\nsignals that may be thrown/caught:\\n$did_not_create_body\\n$error_in_bodys_on_stack\\n$insufficient_bodys_on_stack\\n$wrong_types_on_stack"
+  },
+  "SCALE": {
+    "name": "SCALE",
+    "syntax": "SCALE fact xcent=0 ycent=0 zcent=0",
+    "description": "",
+    "usage": "scales Group on top of Stack around given point",
+    "parameters": "fact xcent=0 ycent=0 zcent=0",
+    "notes": "Solver may not be open\\n(xcent,ycent,zcent are not yet implemented)\\nsensitivity computed w.r.t. fact\\nsets up @-parameters\\nsignals that may be thrown/caught:\\n$insufficient_bodys_on_stack"
+  },
+  "SELECT": {
+    "name": "SELECT",
+    "syntax": "SELECT $type arg1 ...",
+    "description": "",
+    "usage": "selects entity for which @-parameters are evaluated",
+    "parameters": "$type arg1 ...",
+    "notes": "sets @seltype to -1\\nsets @selbody to @nbody\\nsets @sellist to -1\\nelseif arguments are: \"body ibody\"\\nsets @seltype to -1\\nsets @selbody to ibody\\nsets @sellist to -1\\nelseif arguments are: \"body -n\"\\nsets @seltype to -1\\nsets @selbody to the nth from the top of the stack\\nsets @sellist to -1\\nelseif arguments are: \"body attrName1    attrValue1\\nattrName2=$* attrValue2=$*\\nattrName3=$* attrValue3=$*\"\\nsets @seltype to -1\\nuses @selbody to Body that match all Attributes\\nsets @sellist to -1\\nelseif arguments are: \"face\"\\nsets @seltype to 2\\nuses @selbody\\nsets @sellist to all Faces\\nelseif arguments are: \"face iface\"\\nsets @seltype to 2\\nuses @selbody\\nsets @sellist to iface\\n//$$$                  elseif arguments are: \"face 0 iford1\" or\\n//$$$                                        \"face ibody1 0\"\\n//$$$                     sets @seltype to 2\\n//$$$                     uses @selbody\\n//$$$                     sets @sellist with Faces in @selbody that matches ibody1/iford1\\n//$$$                                   (with 0 being treated as a wildcard)\\nelseif arguments are: \"face ibody1 iford1 iseq=1\"\\nsets @seltype to 2\\nuses @selbody\\nsets @sellist with Face in @selbody that matches ibody1/iford1\\n(note that 0 can be used as a wildcard in any numeric field)\\n(note that if any fields are 0, the default iseq=0)\\nelseif arguments are: \"face xmin xmax ymin ymax zmin zmax\"\\nsets @seltype to 2\\nuses @selbody\\nsets @sellist to Faces whose bboxs are completely in given range\\nelseif arguments are: \"face attrName1    attrValue1\\nattrName2=$* attrValue2=$*\\nattrName3=$* attrValue3=$*\"\\nsets @seltype to 2\\nuses @selbody\\nsets @sellist to Faces in @selbody that match all Attributes\\nelseif arguments are: \"edge\"\\nsets @seltype to 1\\nuses @selbody\\nsets @sellist to all Edges\\nelseif arguments are: \"edge iedge\"\\nsets @seltype to 1\\nuses @selbody\\nsets @sellist to iedge\\n//$$$                  elseif arguments are: \"edge 0 iford1 ibody2 iford2\" or\\n//$$$                                        \"edge ibody1 0 ibody2 iford2\" or\\n//$$$                                        \"edge ibody1 iford1 0 iford2\" or\\n//$$$                                        \"edge ibody1 iford1 ibody2 0\" or\\n//$$$                                        \"edge ibody1 0 ibody2 0\"\\n//$$$                     sets @seltype to 1\\n//$$$                     uses @selbody\\n//$$$                     sets @sellist to Edge in @selbody that adjoins Faces\\n//$$$                        ibody1/iford1 and ibody2/iford2 (with 0 being treated as wildcard)\\nelseif arguments are: \"edge ibody1 iford1 ibody2 iford2 iseq=1\"\\nsets @seltype to 1\\nuses @selbody\\nsets @sellist to Edge in @selbody that adjoins Faces\\nibody1/iford1 and ibody2/iford2\\n(note that 0 can be used as a wildcard in any numeric field)\\n(note that if any fields are 0, the default iseq=0)\\nelseif arguments are: \"edge xmin xmax ymin ymax zmin zmax\"\\nsets @seltype to 1\\nuses @selbody\\nsets @sellist to Edges whose bboxs are completely in given range\\nelseif arguments are: \"edge attrName1    attrValue1\\nattrName2=$* attrValue2=$*\\nattrName3=$* attrValue3=$*\"\\nsets @seltype to 1\\nuses @selbody\\nsets @sellist to Edges in @selbody that match all Attributes\\nelseif arguments are: \"edge x y z\"\\nsets @seltype to 1\\nuses @selbody\\nsets @sellist to Edge whose center is closest to (x,y,z)\\nelseif arguments are: \"loop iface iloop\"\\nsets @seltype to 1\\nuses @selbody\\nsets @sellist to Edges in order in the Loop\\nelseif arguments are: \"node\"\\nsets @seltype to 0\\nuses @selbody\\nsets @sellist to all Nodes\\nelseif arguments are: \"node inode\"\\nsets @seltype to 0\\nuses @selbody\\nsets @sellist to inode\\nelseif arguments are: \"node x y z\"\\nsets @seltype to 0\\nuses @selbodt\\nsets @sellist to Node closest to (x,y,z)\\nelseif arguments are: \"node xmin xmax ymin ymax zmin zmax\"\\nsets @seltype to 0\\nuses @selbody\\nsets @sellist to Nodes that are in given range\\nelseif arguments are: \"node attrName1    attrValue1\\nattrName2=$* attrValue2=$*\\nattrName3=$* attrValue3=$*\"\\nsets @seltype to 0\\nuses @selbody\\nsets sellist to Nodes in @selbody that match all Attributes\\nelseif arguments are: \"add attrName1    attrValue1\\nattrName2=$* attrValue2=$*\\nattrName3=$* attrValue3=$*\"\\nuses @seltype\\nuses @selbody\\nappends to @selList the Nodes/Edges/Faces that match all Attributes\\nelseif arguments are: \"add ibody1 iford1 iseq=1\" and @seltype is 2\\nuses @selbody\\nappends to @sellist the Face in @selbody that matches ibody1/iford1\\n(a 0 matches ibody1=0 amd/or iford1=0)\\nelseif arguments are: \"add ibody1 iford1 ibody2 iford2 iseq=1\" and @seltype is 1\\nuses @selbody\\nappends to @sellist the Edge in @selbody that adjoins Faces\\n(a 0 matches ibody1=0, iford1=0, ibody2=0, and/or iford2=0)\\nelseif arguments are: \"add iface\" and @seltype is 2\\nuses @selbody\\nappends to @sellist Face iface in @selbody\\n(wildcarding is not allowed)\\nelseif arguments are: \"add iedge\" and @seltype is 1\\nuses @selbody\\nappends to @sellist Edge iedge in @selbody\\n(wildcarding is not allowed)\\nelseif arguments are: \"add inode\" and @seltype is 0\\nuses @selbody\\nappends to @sellist Node inode in @selbody\\n(wildcarding is not allowed)\\nelseif arguments are: \"sub attrName1    attrValue1\\nattrName2=$* attrValue2=$*\\nattrName3=$* attrValue3=$*\"\\nuses @seltype\\nuses @selbody\\nremoves from @sellist the Nodes/Edges/Faces that match all Attributes\\nelseif arguments are: \"sub ibody1 iford1 iseq=1\" and @seltype is 2\\nuses @selbody\\nremoves from @sellist the Face in @selbody that matches ibody1/iford1\\n(a 0 matches ibody1=0 amd/or iford1=0)\\nelseif arguments are: \"sub ibody1 iford1 ibody2 iford2 iseq=1\" and @seltype is 1\\nuses @selbody\\nremoves from @sellist the Edge in @selbody that adjoins Faces\\n(a 0 matches ibody1=0, iford1=0, ibody2=0, and/or iford2=0)\\nelseif arguments are: \"sub ient\" and ient is in @sellist\\nremoves from @sellist ient\\n(wildcarding is not allowed)\\nelseif arguments are: \"sort $key\"\\nsorts @sellist based upon $key which can be: $xmin, $ymin, $zmin,\\n$xmax, $ymax, $zmax, $xcg, $ycg, $zcg, $area, or $length"
+  },
+  "SKBEG": {
+    "name": "SKBEG",
+    "syntax": "SKBEG x y z relative=0",
+    "description": "",
+    "usage": "start a new Sketch with the given point",
+    "parameters": "x y z relative=0",
+    "notes": "Solver may not be open\\nif relative=1, then all values in sketch are relative to x,y,z\\nsensitivity computed w.r.t. x, y, z\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "SKCON": {
+    "name": "SKCON",
+    "syntax": "SKCON $type index1 index2=-1 $value=0",
+    "description": "",
+    "usage": "creates a Sketch constraint",
+    "parameters": "$type index1 index2=-1 $value=0",
+    "notes": "Solver may not be open\\nmay only follow SKVAR or another SKCON statement\\n$type"
+  },
+  "SKEND": {
+    "name": "SKEND",
+    "syntax": "SKEND wireonly=0",
+    "description": "",
+    "usage": "completes a Sketch",
+    "parameters": "wireonly=0",
+    "notes": "Solver may not be open\\nif Sketch contains SKVAR/SKCON, then Sketch variables are\\nupdated first\\nif wireonly=0, all LINSEGs and CIRARCs must be x-, y-, or\\nz-co-planar\\nif Sketch is     closed and wireonly=0,\\nthen a SheetBody is created\\nif Sketch is     closed and wireonly=1,\\nthen a WireBody  is created\\nif Sketch is not closed,\\nthen a WireBody  is created\\nif SKEND immediately follows SKBEG, then a NODE is created\\n(which can be used at either end of a LOFT or BLEND)\\ncloses Sketch\\nnew Face receives the Branch's Attributes\\nsets up @-parameters\\nsignals that may be thrown/caught:\\n$underconstrained\\n$overconstrained\\n$not_converged\\n$colinear_sketch_points\\n$non_coplnar_sketch_points\\n$self_intersecting"
+  },
+  "SKVAR": {
+    "name": "SKVAR",
+    "syntax": "SKVAR $type valList",
+    "description": "",
+    "usage": "create multi-valued Sketch variables and their initial",
+    "parameters": "$type valList",
+    "notes": "Solver may not be open\\nmay only follow SKBEG statement\\n$type\\nxy valList contains ::x[1]; ::y[1]; ::d[1]; ::x[2]; ...\\nyz valList contains ::y[1]; ::z[1]; ::d[1]; ::y[2]; ...\\nzx valList contains ::z[1]; ::x[1]; ::d[1]; ::z[2]; ...\\nvalList is a semicolon-separated list\\nvalList must end with a semicolon\\nthe number of entries in valList is taken from number of\\nsemicolons\\nthe number of entries in valList must be evenly divisible by 3\\nenter :d[i] as zero for LINSEGs\\nvalues of ::x[1], ::y[1], and ::z[1] are overwritten by\\nvalues in SKBEG\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "SOLBEG": {
+    "name": "SOLBEG",
+    "syntax": "SOLBEG $varList",
+    "description": "",
+    "usage": "starts a Solver Block",
+    "parameters": "$varList",
+    "notes": "opens the Solver\\nvarList is a list of semicolon-separated LOCALVARs\\nvarList must end with a semicolon\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "SOLCON": {
+    "name": "SOLCON",
+    "syntax": "SOLCON $expr",
+    "description": "",
+    "usage": "constraint used to set Solver parameters",
+    "parameters": "$expr",
+    "notes": "Solver must be open"
+  },
+  "SPHERE": {
+    "name": "SPHERE",
+    "syntax": "SPHERE xcent ycent zcent radius",
+    "description": "",
+    "usage": "create a sphere Body",
+    "parameters": "xcent ycent zcent radius",
+    "notes": "Solver may not be open\\nsensitivity computed w.r.t. xcent, ycent, zcent, radius\\ncomputes Face, Edge, and Node sensitivities analytically\\nsets up @-parameters\\nthe Faces all receive the Branch's Attributes\\nface-order is: ymin, ymax\\nsignals that may be thrown/caught:\\n$illegal_value"
+  },
+  "SPLINE": {
+    "name": "SPLINE",
+    "syntax": "SPLINE x y z",
+    "description": "",
+    "usage": "add a point to a spline",
+    "parameters": "x y z",
+    "notes": "Solver may not be open\\nsensitivity computed w.r.t. x, y, z\\nsignals that may be thrown/caught:"
+  },
+  "SSLOPE": {
+    "name": "SSLOPE",
+    "syntax": "SSLOPE dx dy dz",
+    "description": "",
+    "usage": "define the slope at the beginning or end of a SPLINE",
+    "parameters": "dx dy dz",
+    "notes": "Solver may not be open\\nfor defining slope at beginning:\\nmust not follow a SPLINE statement\\nmust    precede a SPLINE statement\\nfor definiing slope at end:\\nmust      follow a SPLINE statement\\nmust not precede a SPLINE statement\\ndx, dy, and dz must not all be zero\\nsensitivity computed w.r.t. x, y, z\\nsignals that may be thrown/caught:\\n$illegal_value"
+  },
+  "STORE": {
+    "name": "STORE",
+    "syntax": "STORE $name index=0 keep=0",
+    "description": "",
+    "usage": "stores Group on top of Stack",
+    "parameters": "$name index=0 keep=0",
+    "notes": "Solver may not be open\\n$name is used directly (without evaluation)\\nif index<0, use first available index\\nprevious Group in name/index is overwritten\\nif $name=.   then Body is popped off stack\\nbut not actually stored\\nif $name=..  then pop Bodys off stack back\\nto the Mark\\nif $name=... then the stack is cleared\\nif keep==1, the Group is not popped off stack\\ncannot be followed by ATTRIBUTE or CSYSTEM\\nsignals that may be thrown/caught:\\n$insufficient_bodys_on_stack"
+  },
+  "SUBTRACT": {
+    "name": "SUBTRACT",
+    "syntax": "SUBTRACT $order=none index=1 maxtol=0",
+    "description": "",
+    "usage": "perform Boolean subtraction (Body2 - Body1)",
+    "parameters": "$order=none index=1 maxtol=0",
+    "notes": "Solver may not be open\\nif     Body1=SolidBody and Body2=SolidBody\\ncreate SolidBody that is the part of Body1 that is\\noutside Body2\\nif index=-1, then all Bodys are returned\\nelseif Body1=SolidBody and Body2=SheetBody\\ncreate SolidBody that is Body1 scribed with Edges at\\nintersection with Body2\\nelseif Body1=SheetBody and Body2=SolidBody\\ncreate SheetBody that is part of Body1 that is\\noutside Body2\\nif index=-1, then all Bodys are returned\\nelseif Body1=SheetBody and Body2=SheetBody\\ncreate SheetBody that is Body1 scribed with Edges at\\nintersection with Body2\\nelseif Body1=WireBody and Body2=SolidBody\\ncreate WireBody that is part of Body1 that is outside Body2"
+  },
+  "THROW": {
+    "name": "THROW",
+    "syntax": "THROW sigCode",
+    "description": "",
+    "usage": "set current signal to sigCode",
+    "parameters": "sigCode",
+    "notes": "sigCode>0 are usually user-generated signals\\nsigCode<0 are usually system-generated signals\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "TORUS": {
+    "name": "TORUS",
+    "syntax": "TORUS xcent ycent zcent dxaxis dyaxis dzaxis majorRad minorRad",
+    "description": "",
+    "usage": "create a torus Body",
+    "parameters": "xcent ycent zcent dxaxis dyaxis dzaxis majorRad minorRad",
+    "notes": "Solver may not be open\\nsensitivity computed w.r.t. xcent, ycent, zcent, dxaxis,\\ndyaxis, dzaxis, majorRad, minorRad\\nsets up @-parameters\\nthe Faces all receive the Branch's Attributes\\nface-order is: xmin/ymin, xmin/ymax, xmax/ymin, xmax/ymax\\nsignals that may be thrown/caught:\\n$illegal_value"
+  },
+  "TRANSLATE": {
+    "name": "TRANSLATE",
+    "syntax": "TRANSLATE dx dy dz",
+    "description": "",
+    "usage": "translates Group on top of Stack",
+    "parameters": "dx dy dz",
+    "notes": "Solver may not be open\\nsensitivity computed w.r.t. dx, dy, dz\\nsets up @-parameters\\nsignals that may be thrown/caught:\\n$insufficient_bodys_on_stack"
+  },
+  "UBOUND": {
+    "name": "UBOUND",
+    "syntax": "UBOUND $pmtrName bounds",
+    "description": "",
+    "usage": "defines an upper bound for a DESPMTR or CFGPMTR",
+    "parameters": "$pmtrName bounds",
+    "notes": "Solver may not be open\\nstatement may not be used in a function-type .udc file\\nif value of Parameter is larger than bounds, a warning is\\ngenerated\\npmtrName must have been defined previously by DESPMTR\\nstatement\\npmtrName can be in form 'name' or 'name[irow,icol]'\\npmtrName must not start with '@'\\npmtrName is used directly (without evaluation)\\nirow and icol cannot contain a comma or open bracket\\nif irow is a colon (:), then all rows    are input\\nif icol is a colon (:), then all columns are input\\npmtrName[:,:] is equivalent to pmtrName\\nbounds cannot refer to any other Parameter\\nbounds are defined across rows, then across columns\\nif bounds has more entries than needed, extra bounds\\nare lost\\nif bounds has fewer entries than needed, last bound\\nis repeated\\nany previous bounds are overwritten\\ndoes not create a Branch\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "UDPARG": {
+    "name": "UDPARG",
+    "syntax": "UDPARG $primtype $argName1 argValue1 $argName2 argValue2 ...",
+    "description": "",
+    "usage": "pre-set arguments for next UDPRIM statement",
+    "parameters": "$primtype $argName1 argValue1 $argName2 argValue2 ...",
+    "notes": "Solver may not be open\\nthere can be no statements except other UDPARGs before the\\nnext matching UDPRIM\\nprimtype determines the type of primitive\\nprimtype must match primtype of next UDPRIM statement\\nprimtype is used directly (without evaluation)\\narguments are specified in name/value pairs and are\\nnot positional\\nargName#  is used directly (without evaluation)\\nargValue# is used directly if it starts with '$', otherwise it\\nis evaluated\\nif argValue starts with '$$/', use path relative to .csm file\\narguments for following UDPRIM statement are evaluated\\nin the order they are encountered (UDPARG first)\\nsensitivity computed w.r.t. argValue1, argValue2, argValue3,\\nargValue4\\ncannot be followed by ATTRIBUTE or CSYSTEM"
+  },
+  "UNION": {
+    "name": "UNION",
+    "syntax": "UNION toMark=0 trimList=0 maxtol=0",
+    "description": "",
+    "usage": "perform Boolean union",
+    "parameters": "toMark=0 trimList=0 maxtol=0",
+    "notes": "Solver may not be open\\nif     toMark=1\\ncreate SolidBody that is combination of SolidBodys\\nsince Mark\\nelseif Body1=SolidBody and Body2=SolidBody\\nif trimList=0\\ncreate SolidBody that us combination of Body1 and Body2\\nelse\\ncreate SolidBody that is trimmed combination of Body1\\nand Body2\\ntrimList contains x;y;z;dx;dy;dz where\\n(x,y,z) is inside the Body to be trimmed\\n(dx,dy,dz) is step toward the trimming Body\\nendif\\nelseif Body1=SheetBody and Body2=SheetBody\\ncreate SheetBody that is the combination of Bodys with\\npossible new Edges\\nendif\\nif maxtol>0, then tolerance can be relaxed until successful\\nif maxtol<0, then use -maxtol as only tolerance to use\\nsets up @-parameters\\nsignals that may be thrown/caught:\\n$did_not_create_body\\n$illegal_value\\n$insufficient_bodys_on_stack\\n$wrong_types_on_stack\\n*/"
+  }
+}

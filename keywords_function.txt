@@ -1,5 +1,0 @@
-kulfan
-class
-ztail
-aupper
-alower

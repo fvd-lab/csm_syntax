@@ -1,19 +1,43 @@
 {
-  "name": "csm-language",
+  "name": "csm-language-support",
   "displayName": "CSM Language Support",
-  "description": "Syntax highlighting for CSM files",
-  "version": "1.0.0",
-  "license": "MIT",
-  "engines": { 
-    "vscode": "^1.0.0" 
+  "description": "Language support for CSM (Constructive Solid Modeling) files with syntax highlighting, comment toggling, and hover documentation",
+  "version": "0.0.1",
+  "publisher": "csm-language-team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/csm-language-support.git"
   },
-  "categories": ["Programming Languages"],
+  "engines": {
+    "vscode": "^1.109.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "main": "./src/extension.js",
+  "activationEvents": [
+    "onLanguage:csm"
+  ],
+  "scripts": {
+    "generate-grammar": "node scripts/generate-grammar.js",
+    "generate-docs": "node scripts/generate-docs.js",
+    "prebuild": "npm run generate-grammar && npm run generate-docs",
+    "build": "echo 'Grammar and documentation generated successfully'",
+    "prepackage": "npm run build",
+    "package": "vsce package",
+    "install-local": "node scripts/install-extension.js",
+    "dev": "npm run package && npm run install-local",
+    "prepublish": "npm run build",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^2.15.0"
+  },
   "contributes": {
     "languages": [{
       "id": "csm",
       "aliases": ["CSM", "csm"],
       "extensions": [".csm"],
-      "filenames": [],
       "configuration": "./language-configuration.json"
     }],
     "grammars": [{

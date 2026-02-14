@@ -1,193 +1,139 @@
 # CSM Language Support for VS Code
 
-Note:  This repository was almost entirely created using GenAI with some limited human supervision.  It is regularly used and updated by human users of Engineering Sketch Pad.
-
-A Visual Studio Code extension that provides syntax highlighting and language support for CSM (Computer-aided Solid Modeling) files.
+A Visual Studio Code extension that provides comprehensive language support for CSM (Constructive Solid Modeling) files.
 
 ## Features
 
-- **Syntax Highlighting**: Full syntax highlighting for CSM keywords, comments, strings, numbers, and variables
+- **Syntax Highlighting**: Full syntax highlighting for CSM keywords, functions, comments, strings, and numbers
 - **Comment Toggle**: Use `Cmd+/` (Mac) or `Ctrl+/` (Windows/Linux) to toggle line comments with `#`
-- **Auto-closing Brackets**: Automatic closing of parentheses, brackets, and quotes
-- **Bracket Matching**: Highlights matching brackets and parentheses
-- **Case-insensitive Keywords**: Keywords are recognized regardless of case
+- **Bracket Matching**: Auto-closing and matching for parentheses, brackets, and braces
+- **String Support**: Syntax highlighting for both single and double quoted strings
 
-## Supported CSM Keywords
+## Supported File Extensions
 
-The extension recognizes 70+ CSM commands including:
+- `.csm` - CSM (Constructive Solid Modeling) files
 
-### Geometry Creation
-- `point`, `box`, `sphere`, `cone`, `cylinder`, `torus`
-- `import`, `restore`, `udprim`
+## Development
 
-### Geometry Operations
-- `extrude`, `rule`, `blend`, `revolve`, `sweep`
-- `fillet`, `chamfer`, `hollow`
-- `intersect`, `subtract`, `union`, `join`, `connect`
+### Quick Start for Developers
 
-### Transformations
-- `translate`, `rotatex`, `rotatey`, `rotatez`
-- `scale`, `mirror`, `applycsys`
+1. Clone this repository
+2. Install dependencies: `npm install`
+3. Make your changes
+4. Test by running: `npm run dev` (packages and installs locally)
+5. Reload VS Code window (`Cmd+R` or `Ctrl+R`) to see changes
 
-### Control Flow
-- `ifthen`, `elseif`, `else`, `endif`
-- `patbeg`, `patbreak`, `patend`
+### Project Structure
 
-### Parameters & Variables
-- `cfgpmtr`, `conpmtr`, `despmtr`, `outpmtr`
-- `dimension`, `set`, `evaluate`
+```
+csm-language-support/
+├── scripts/
+│   └── generate-grammar.js        # Grammar generation script with embedded keywords
+├── syntaxes/
+│   └── csm.tmLanguage.json        # Generated TextMate grammar
+├── language-configuration.json     # Language configuration (comments, brackets)
+└── package.json                   # Extension manifest
+```
 
-### Sketching
-- `skbeg`, `skvar`, `skcon`, `linseg`, `cirarc`, `arc`, `spline`, `sslope`, `bezier`, `skend`
+### Adding New Keywords
 
-### And many more...
+To add new keywords, edit the `generate-grammar.js` script directly and update the `controlKeywords` or `functionKeywords` arrays. Then, run the following command to regenerate the grammar:
+
+```bash
+npm run generate-grammar
+```
+
+### Available Scripts
+
+- `npm run dev` - Package and install locally for testing (quick development cycle)
+- `npm run generate-grammar` - Generate TextMate grammar from embedded keywords
+- `npm run build` - Build the extension (includes grammar generation)
+- `npm run package` - Package the extension into a .vsix file
+- `npm run install-local` - Install the packaged extension into VS Code
+- `npm run publish` - Publish the extension (requires vsce setup)
+
+## Example CSM Code
+
+```csm
+# CSM Example - Airfoil Generation
+CFGPMTR kulfan_LowerAmount 4
+CFGPMTR kulfan_UpperAmount 4
+
+dimension class 1 2 1
+dimension ztail 1 2 1
+dimension aupper 1 kulfan_UpperAmount 1
+dimension alower 1 kulfan_UpperAmount 1
+
+despmtr class "0.5; 1.0"
+despmtr ztail "0.0005; -0.0005"
+despmtr aupper "0.1; 0.15; 0.12; 0.1"
+despmtr alower "-.08; -.015; -.03; 0.0012"
+
+udparg kulfan class class
+udparg kulfan ztail ztail
+udparg kulfan aupper aupper    
+udprim kulfan alower alower
+
+store airfoil
+```
 
 ## Installation
 
-### Initial Setup (First Time Only)
+### From VSIX (Recommended)
 
-1. Clone or download this repository
-2. Run the installation script:
+No prerequisites required - just download and install!
 
-   **On macOS/Linux:**
+1. Download the latest `.vsix` file from the [releases page](https://github.com/your-username/csm-language-support/releases)
+2. Open VS Code
+3. Press `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows/Linux) to open the command palette
+4. Type "Extensions: Install from VSIX..." and select it
+5. Navigate to the downloaded `.vsix` file and select it
+6. Reload VS Code when prompted (or press `Cmd+R` / `Ctrl+R`)
+
+### From Source
+
+**Prerequisites:** Node.js (v14 or higher) and npm
+
+1. Clone this repository:
    ```bash
-   chmod +x install.sh
-   ./install.sh
+   git clone https://github.com/your-username/csm-language-support.git
+   cd csm-language-support
    ```
-
-   **On Windows:**
-   ```cmd
-   install.bat
-   ```
-
-3. Reload VS Code (`Cmd+Shift+P` → "Developer: Reload Window")
-
-### Updating Keywords (After Adding New Keywords)
-
-After you modify `keywords_control.txt` or `keywords_function.txt`, use the quick update script:
-
-   **On macOS/Linux:**
+2. Install dependencies:
    ```bash
-   ./update.sh
+   npm install
    ```
-
-   **On Windows:**
-   ```cmd
-   update.bat
-   ```
-
-Then reload VS Code or simply close/reopen your CSM files.
-
-## Usage
-
-Once installed, the extension will automatically activate when you open any `.csm` file. You'll see:
-
-- Keywords highlighted in different colors
-- Comments (starting with `#`) highlighted
-- Numbers and strings highlighted
-- Auto-completion for brackets and quotes
-
-### Comment Toggle
-
-Select one or more lines and press `Cmd+/` (Mac) or `Ctrl+/` (Windows/Linux) to add or remove `#` comments.
-
-## Adding New Keywords
-
-Adding new CSM keywords is extremely simple with the dedicated update script:
-
-### Quick Update Process (Recommended)
-
-1. **Edit the keyword files:**
-   - **For control keywords** (commands like `point`, `box`, `extrude`, etc.): Edit `keywords_control.txt`
-   - **For function keywords** (specific functions like `kulfan`, etc.): Edit `keywords_function.txt`
-   - Add one keyword per line
-
-2. **Run the update script:**
+3. Package the extension:
    ```bash
-   ./update.sh        # On Mac/Linux
-   update.bat         # On Windows
+   npm run package
    ```
-
-3. **Reload VS Code** (`Cmd+Shift+P` → "Developer: Reload Window")
-
-### Example: Adding a New Keyword
-
-To add a new keyword `mynewcommand`:
-
-1. Open `keywords_control.txt`
-2. Add a new line with: `mynewcommand`
-3. Save the file
-4. Run `./update.sh` (or `update.bat` on Windows)
-5. Reload VS Code
-
-That's it! The keyword will now be highlighted.
-
-### Alternative: Full Reinstall
-
-You can also run the full installation script again:
-```bash
-./install.sh        # On Mac/Linux
-install.bat         # On Windows
-```
-
-### Advanced: Manual Template Editing
-
-If you need more control over the syntax patterns, you can edit `csm.tmLanguage.template.json` directly. The installation/update scripts will replace:
-- `{{CONTROL_KEYWORDS}}` with keywords from `keywords_control.txt`
-- `{{FUNCTION_KEYWORDS}}` with keywords from `keywords_function.txt`
-
-## File Structure
-
-```
-csm_environment/
-├── README.md                           # This documentation
-├── LICENSE                             # MIT License
-├── package.json                        # Extension manifest
-├── language-configuration.json         # Language configuration (comments, brackets)
-├── install.sh                          # Unix/Mac installation script (first time)
-├── install.bat                         # Windows installation script (first time)
-├── update.sh                           # Unix/Mac quick update script
-├── update.bat                          # Windows quick update script
-├── keywords_control.txt                # CSM control keywords (one per line)
-├── keywords_function.txt               # CSM function keywords (one per line)
-└── csm.tmLanguage.template.json       # Syntax highlighting template
-
-Note: The syntaxes/ folder and csm.tmLanguage.json file are created automatically during installation.
-```
-
-### Key Files for Maintenance
-
-- **`keywords_control.txt`**: Add new CSM commands here (one per line)
-- **`keywords_function.txt`**: Add new CSM functions here (one per line)  
-- **`update.sh` / `update.bat`**: Quick update after modifying keyword files
-- **`csm.tmLanguage.template.json`**: Modify syntax patterns if needed
-
-### Scripts
-
-- **Install scripts** (`install.sh`/`install.bat`): Full installation - use once
-- **Update scripts** (`update.sh`/`update.bat`): Quick keyword updates - use repeatedly
-
-The scripts automatically generate the final syntax file by reading the keyword files and substituting them into the template.
+4. Install the generated `.vsix` file using the steps above, or run:
+   ```bash
+   npm run install-local
+   ```
+5. Reload VS Code window (`Cmd+R` or `Ctrl+R`)
 
 ## Contributing
 
-Feel free to submit issues or pull requests to improve the extension. Common contributions:
+1. Fork the repository
+2. Clone your fork and create a new branch
+3. Make your changes
+4. Update the `generate-grammar.js` script if adding new keywords
+5. Test your changes using `npm run dev`
+6. Submit a pull request
 
-- Adding new CSM keywords
-- Improving syntax patterns
-- Adding new language features
+**Note:** Before publishing, update the repository URL in `package.json` to match your GitHub repository.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-This extension is provided as-is for educational and research purposes.
+## Release Notes
 
-## Changelog
+### 0.0.1
 
-### Version 1.0.0
-- Initial release with CSM syntax highlighting
-- Support for 70+ CSM keywords
-- Comment toggle functionality
-- Auto-closing brackets and quotes
-- Case-insensitive keyword matching
+- Initial release
+- Basic syntax highlighting for CSM files
+- Comment toggling support with `#`
+- Embedded keywords for grammar generation
+- Support for 42+ control keywords and 64+ function keywords
