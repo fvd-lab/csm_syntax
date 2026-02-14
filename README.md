@@ -1,5 +1,7 @@
 # CSM Language Support for VS Code
 
+Note: This repository was almost entirely created using GenAI with some limited human supervision. It is regularly used and updated by human users of Engineering Sketch Pad.
+
 A Visual Studio Code extension that provides comprehensive language support for CSM (Constructive Solid Modeling) files.
 
 ## Features
