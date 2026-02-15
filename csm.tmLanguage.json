@@ -15,9 +15,6 @@
       "include": "#comments"
     },
     {
-      "include": "#strings"
-    },
-    {
       "include": "#numbers"
     },
     {
@@ -46,32 +43,6 @@
           "name": "comment.line.number-sign.csm",
           "begin": "#",
           "end": "$",
-          "patterns": [
-            {
-              "name": "constant.character.escape.csm",
-              "match": "\\\\."
-            }
-          ]
-        }
-      ]
-    },
-    "strings": {
-      "patterns": [
-        {
-          "name": "string.quoted.double.csm",
-          "begin": "\"",
-          "end": "\"|$",
-          "patterns": [
-            {
-              "name": "constant.character.escape.csm",
-              "match": "\\\\."
-            }
-          ]
-        },
-        {
-          "name": "string.quoted.single.csm",
-          "begin": "'",
-          "end": "'|$",
           "patterns": [
             {
               "name": "constant.character.escape.csm",

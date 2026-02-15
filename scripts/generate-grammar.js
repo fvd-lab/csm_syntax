@@ -123,9 +123,6 @@ function generateGrammar() {
         "include": "#comments"
       },
       {
-        "include": "#strings"
-      },
-      {
         "include": "#numbers"
       },
       {
@@ -163,32 +160,7 @@ function generateGrammar() {
           }
         ]
       },
-      "strings": {
-        "patterns": [
-          {
-            "name": "string.quoted.double.csm",
-            "begin": "\"",
-            "end": "\"|$",
-            "patterns": [
-              {
-                "name": "constant.character.escape.csm",
-                "match": "\\\\."
-              }
-            ]
-          },
-          {
-            "name": "string.quoted.single.csm",
-            "begin": "'",
-            "end": "'|$",
-            "patterns": [
-              {
-                "name": "constant.character.escape.csm",
-                "match": "\\\\."
-              }
-            ]
-          }
-        ]
-      },
+
       "numbers": {
         "patterns": [
           {
