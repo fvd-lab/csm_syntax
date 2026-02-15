@@ -168,7 +168,7 @@ function generateGrammar() {
           {
             "name": "string.quoted.double.csm",
             "begin": "\"",
-            "end": "\"",
+            "end": "\"|$",
             "patterns": [
               {
                 "name": "constant.character.escape.csm",
@@ -179,7 +179,7 @@ function generateGrammar() {
           {
             "name": "string.quoted.single.csm",
             "begin": "'",
-            "end": "'",
+            "end": "'|$",
             "patterns": [
               {
                 "name": "constant.character.escape.csm",

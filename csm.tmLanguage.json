@@ -60,7 +60,7 @@
         {
           "name": "string.quoted.double.csm",
           "begin": "\"",
-          "end": "\"",
+          "end": "\"|$",
           "patterns": [
             {
               "name": "constant.character.escape.csm",
@@ -71,7 +71,7 @@
         {
           "name": "string.quoted.single.csm",
           "begin": "'",
-          "end": "'",
+          "end": "'|$",
           "patterns": [
             {
               "name": "constant.character.escape.csm",
