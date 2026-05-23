@@ -81,39 +81,78 @@ store airfoil
 
 ## Installation
 
-### From VSIX (Recommended)
+This repository ships with a pre-built `.vsix` file (`csm-language-support-0.0.1.vsix`) at the project root. Pick whichever method below is easiest for you.
 
-No prerequisites required - just download and install!
+### Option 1: Install the bundled `.vsix` via the VS Code UI (easiest)
 
-1. Download the latest `.vsix` file from the [releases page](https://github.com/your-username/csm-language-support/releases)
-2. Open VS Code
-3. Press `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows/Linux) to open the command palette
-4. Type "Extensions: Install from VSIX..." and select it
-5. Navigate to the downloaded `.vsix` file and select it
-6. Reload VS Code when prompted (or press `Cmd+R` / `Ctrl+R`)
+No prerequisites required.
 
-### From Source
+1. Open VS Code.
+2. Open the Extensions view (`Cmd+Shift+X` on Mac, `Ctrl+Shift+X` on Windows/Linux).
+3. Click the `…` menu in the top-right of the Extensions view and choose **Install from VSIX…**.
+4. Navigate to this folder and select `csm-language-support-0.0.1.vsix`.
+5. When prompted, reload VS Code (or press `Cmd+R` / `Ctrl+R`).
+6. Open any `.csm` file to verify syntax highlighting works.
 
-**Prerequisites:** Node.js (v14 or higher) and npm
+### Option 2: Install the bundled `.vsix` from the command line
 
-1. Clone this repository:
+You need the `code` command available on your `PATH`. On macOS, if `code` is not found, you can either:
+
+- In VS Code, run **Shell Command: Install 'code' command in PATH** from the command palette (`Cmd+Shift+P`), **or**
+- Call the CLI directly:
+  ```bash
+  "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" --install-extension /path/to/csm-language-support-0.0.1.vsix
+  ```
+
+With `code` on your `PATH`:
+
+```bash
+cd /path/to/csm_syntax
+code --install-extension csm-language-support-0.0.1.vsix
+```
+
+Then reload VS Code.
+
+### Option 3: Build and install from source
+
+Use this if you've modified the grammar, keywords, or documentation and want to install your changes.
+
+**Prerequisites:** Node.js (v14 or higher) and npm.
+
+1. Open a terminal in this folder:
    ```bash
-   git clone https://github.com/your-username/csm-language-support.git
-   cd csm-language-support
+   cd /path/to/csm_syntax
    ```
 2. Install dependencies:
    ```bash
    npm install
    ```
-3. Package the extension:
+3. Build, package, and install in one step:
    ```bash
-   npm run package
+   npm run dev
    ```
-4. Install the generated `.vsix` file using the steps above, or run:
+   This regenerates the grammar/docs, produces a fresh `.vsix`, and installs it into VS Code.
+
+   Or run the steps individually:
    ```bash
-   npm run install-local
+   npm run package         # produces csm-language-support-<version>.vsix
+   npm run install-local   # installs the produced .vsix into VS Code
    ```
-5. Reload VS Code window (`Cmd+R` or `Ctrl+R`)
+4. Reload the VS Code window (`Cmd+R` or `Ctrl+R`).
+
+### Verifying the installation
+
+1. Open the Extensions view and search for **CSM Language Support** — it should appear as installed.
+2. Open any `.csm` file; keywords, comments (`#`), and strings should be color-highlighted.
+3. Press `Cmd+/` (Mac) or `Ctrl+/` (Windows/Linux) on a line to toggle a `#` comment.
+
+### Uninstalling
+
+In the Extensions view, find **CSM Language Support**, click the gear icon, and choose **Uninstall**. Or from the command line:
+
+```bash
+code --uninstall-extension csm-language-team.csm-language-support
+```
 
 ## Contributing
 
